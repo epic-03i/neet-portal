@@ -2,123 +2,209 @@
 <html>
 <head>
     <title>NEET Daily Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         /* ========== ALL CSS IN ONE FILE ========== */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
         body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding: 10px;
+            line-height: 1.5;
         }
+        
         .container { 
-            max-width: 900px; 
-            margin: 20px auto; 
+            max-width: 100%; 
+            margin: 10px auto; 
             background: white; 
             border-radius: 15px; 
             overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
         }
         
         /* Header */
         .header { 
             background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
             color: white; 
-            padding: 25px; 
+            padding: 20px 15px; 
             text-align: center;
         }
+        
         .header h1 { 
-            font-size: 28px; 
-            margin-bottom: 5px;
+            font-size: clamp(20px, 5vw, 28px); 
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .header p {
+            font-size: clamp(14px, 3vw, 16px);
+            opacity: 0.9;
         }
         
         /* Timer */
         .timer { 
             background: #ef4444; 
             color: white; 
-            padding: 15px; 
-            font-size: 28px; 
+            padding: 12px; 
+            font-size: clamp(22px, 6vw, 28px); 
             text-align: center; 
             font-weight: bold;
-            font-family: monospace;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
         }
+        
         .timer.warning { background: #f59e0b; }
-        .timer.danger { background: #dc2626; animation: pulse 1s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        .timer.danger { 
+            background: #dc2626; 
+            animation: pulse 1s infinite; 
+        }
+        
+        @keyframes pulse { 
+            0%, 100% { opacity: 1; } 
+            50% { opacity: 0.7; } 
+        }
         
         /* Progress */
         .progress-container { 
-            padding: 15px 25px; 
+            padding: 15px; 
             background: #f8fafc; 
             border-bottom: 1px solid #e2e8f0;
         }
-        .progress-bar { 
-            height: 10px; 
-            background: #e2e8f0; 
-            border-radius: 5px; 
-            overflow: hidden; 
-            margin-top: 10px;
+        
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: clamp(14px, 3vw, 16px);
         }
+        
+        .progress-bar { 
+            height: 12px; 
+            background: #e2e8f0; 
+            border-radius: 6px; 
+            overflow: hidden; 
+            margin-top: 5px;
+        }
+        
         .progress-fill { 
             height: 100%; 
             background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
             width: 0%;
             transition: width 0.3s;
+            border-radius: 6px;
+        }
+        
+        /* Submit Button Area */
+        .submit-area {
+            background: #f0f9ff;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: clamp(16px, 4vw, 18px);
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        .submit-note {
+            font-size: clamp(12px, 3vw, 14px);
+            color: #6b7280;
+            margin-top: 8px;
         }
         
         /* Question Container */
         .question-container { 
-            padding: 30px; 
-            min-height: 400px;
+            padding: 20px 15px; 
+            min-height: 50vh;
         }
+        
         .question-number { 
             color: #4f46e5; 
-            font-size: 18px; 
+            font-size: clamp(16px, 4vw, 18px); 
             margin-bottom: 10px;
+            font-weight: 600;
         }
+        
         .question-text { 
-            font-size: 20px; 
+            font-size: clamp(18px, 4.5vw, 20px); 
             line-height: 1.6; 
             margin-bottom: 25px;
             color: #1f2937;
+            padding: 10px 0;
         }
         
         /* Options */
         .options { 
             display: grid; 
             gap: 12px;
+            margin-bottom: 20px;
         }
+        
         .option { 
             padding: 15px; 
             border: 2px solid #e5e7eb; 
-            border-radius: 10px; 
+            border-radius: 12px; 
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             align-items: center;
+            min-height: 60px;
         }
+        
         .option:hover { 
             border-color: #c7d2fe; 
             background: #f5f3ff;
         }
+        
         .option.selected { 
             border-color: #4f46e5; 
             background: #eef2ff;
+            transform: scale(1.02);
         }
+        
         .option.correct { 
             border-color: #10b981; 
             background: #d1fae5;
         }
+        
         .option.wrong { 
             border-color: #ef4444; 
             background: #fee2e2;
         }
+        
         .option-letter { 
-            width: 36px; 
+            min-width: 36px; 
             height: 36px; 
             background: #4f46e5; 
             color: white; 
@@ -128,47 +214,67 @@
             justify-content: center; 
             margin-right: 15px;
             font-weight: bold;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        
+        .option-text { 
+            flex-grow: 1;
+            font-size: clamp(16px, 4vw, 18px);
         }
         
         /* Navigation */
         .navigation { 
-            padding: 20px 30px; 
+            padding: 15px; 
             background: #f8fafc; 
             border-top: 1px solid #e2e8f0;
             display: flex;
             justify-content: space-between;
+            gap: 10px;
         }
+        
         .nav-btn { 
-            padding: 12px 25px; 
+            padding: clamp(12px, 3vw, 14px) clamp(20px, 4vw, 25px); 
             background: #4f46e5; 
             color: white; 
             border: none; 
-            border-radius: 8px; 
+            border-radius: 10px; 
             cursor: pointer; 
-            font-size: 16px;
+            font-size: clamp(14px, 3.5vw, 16px);
             font-weight: 600;
             transition: all 0.3s;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
+        
         .nav-btn:hover { 
             background: #4338ca; 
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
         }
+        
+        .nav-btn:active {
+            transform: translateY(0);
+        }
+        
         .nav-btn:disabled { 
             background: #9ca3af; 
             cursor: not-allowed;
             transform: none;
-            box-shadow: none;
+            opacity: 0.7;
         }
         
         /* Results */
         .results-container { 
-            padding: 40px; 
+            padding: clamp(20px, 5vw, 40px); 
             text-align: center;
         }
+        
         .score-circle {
-            width: 200px;
-            height: 200px;
+            width: clamp(150px, 40vw, 200px);
+            height: clamp(150px, 40vw, 200px);
             border-radius: 50%;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -177,111 +283,302 @@
             align-items: center;
             justify-content: center;
             margin: 0 auto 30px;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
         }
+        
         .score-percentage { 
-            font-size: 48px; 
+            font-size: clamp(36px, 8vw, 48px); 
             font-weight: bold;
         }
+        
         .score-label { 
-            font-size: 18px;
+            font-size: clamp(14px, 3vw, 18px);
+            opacity: 0.9;
+        }
+        
+        .score-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            max-width: 500px;
+            margin: 30px auto;
+            padding: 0 10px;
+        }
+        
+        .stat-box {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .stat-value {
+            font-size: clamp(20px, 5vw, 24px);
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: clamp(12px, 3vw, 14px);
+            color: #6b7280;
+        }
+        
+        .stat-correct .stat-value { color: #065f46; }
+        .stat-wrong .stat-value { color: #991b1b; }
+        .stat-unattempted .stat-value { color: #92400e; }
+        
+        .results-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 400px;
+            margin: 40px auto;
+            padding: 0 15px;
+        }
+        
+        .action-btn {
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: clamp(16px, 4vw, 18px);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .action-btn-next {
+            background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+            color: white;
+        }
+        
+        .action-btn-review {
+            background: #4b5563;
+            color: white;
+        }
+        
+        .action-btn-retry {
+            background: #ef4444;
+            color: white;
         }
         
         /* Day Selector */
         .day-selector {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
             gap: 10px;
             margin: 20px 0;
             max-height: 300px;
             overflow-y: auto;
-            padding: 10px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 12px;
         }
+        
         .day-btn {
-            width: 60px;
-            height: 60px;
+            width: 55px;
+            height: 55px;
             border: 3px solid;
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 18px;
+            font-size: clamp(16px, 4vw, 18px);
             cursor: pointer;
             transition: all 0.3s;
         }
+        
         .day-btn.available { 
             background: #d1fae5; 
             border-color: #10b981;
             color: #065f46;
         }
+        
         .day-btn.completed { 
             background: #bfdbfe; 
             border-color: #3b82f6;
             color: #1e40af;
         }
+        
         .day-btn.current { 
             background: #fef3c7; 
             border-color: #f59e0b;
             color: #92400e;
         }
+        
         .day-btn.locked { 
             background: #f3f4f6; 
             border-color: #d1d5db;
             color: #6b7280;
             cursor: not-allowed;
         }
-        .day-btn:hover:not(.locked) { 
-            transform: scale(1.1); 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        
+        /* Start Screen */
+        .start-content {
+            padding: clamp(20px, 5vw, 40px);
+            text-align: center;
         }
         
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container { margin: 10px; border-radius: 10px; }
-            .header { padding: 20px; }
-            .header h1 { font-size: 22px; flex-direction: column; }
-            .question-container { padding: 20px; }
-            .question-text { font-size: 18px; }
-            .day-btn { width: 50px; height: 50px; font-size: 16px; }
+        .welcome-box {
+            background: #f5f3ff;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 2px solid #ddd6fe;
+        }
+        
+        .welcome-box h3 {
+            color: #6d28d9;
+            margin-bottom: 15px;
+            font-size: clamp(18px, 4.5vw, 22px);
+        }
+        
+        .features-list {
+            text-align: left;
+            color: #4b5563;
+            line-height: 1.8;
+            padding-left: 20px;
+        }
+        
+        .features-list li {
+            margin-bottom: 10px;
+            font-size: clamp(14px, 3.5vw, 16px);
+        }
+        
+        .name-input {
+            padding: 16px;
+            font-size: clamp(16px, 4vw, 18px);
+            width: 100%;
+            max-width: 400px;
+            border: 2px solid #c7d2fe;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .start-btn {
+            padding: 16px 40px;
+            font-size: clamp(16px, 4vw, 18px);
+            background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 10px 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Detailed Results */
+        .detailed-results {
+            text-align: left;
+            max-width: 700px;
+            margin: 40px auto 0;
+            padding: 0 10px;
+        }
+        
+        .result-item {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        /* Media Queries */
+        @media (max-width: 480px) {
+            .container { 
+                margin: 5px; 
+                border-radius: 12px;
+            }
+            
+            .header { 
+                padding: 15px 10px; 
+            }
+            
+            .question-container { 
+                padding: 15px 10px; 
+            }
+            
+            .option { 
+                padding: 12px; 
+                min-height: 55px;
+            }
+            
+            .option-letter { 
+                min-width: 32px; 
+                height: 32px; 
+                margin-right: 10px;
+                font-size: 14px;
+            }
+            
+            .score-stats {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .nav-btn {
+                padding: 14px;
+            }
+            
+            .day-btn {
+                width: 50px;
+                height: 50px;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .container { 
+                max-width: 700px; 
+            }
+            
+            .action-btn {
+                padding: 18px;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Start Screen -->
-    <div id="startScreen" class="container" style="display: block;">
+    <div id="startScreen" class="container">
         <div class="header">
             <h1>🎓 NEET Daily Test Portal</h1>
             <p>Complete 82 days of preparation with daily tests</p>
         </div>
         
-        <div style="padding: 40px; text-align: center;">
-            <h2 style="color: #4f46e5; margin-bottom: 30px;">Welcome to Your NEET Preparation Journey!</h2>
+        <div class="start-content">
+            <div class="welcome-box">
+                <h3>📋 How It Works</h3>
+                <ul class="features-list">
+                    <li><strong>Day 1-82:</strong> Daily 15-question tests based on schedule</li>
+                    <li><strong>Weekends:</strong> Grand tests of 180 questions</li>
+                    <li><strong>Scoring:</strong> +4 for correct, -1 for wrong, 0 for unattempted</li>
+                    <li><strong>Progress:</strong> Automatic tracking with Firebase</li>
+                    <li><strong>Certificate:</strong> Upon completion of 82 days</li>
+                </ul>
+            </div>
             
-            <div style="max-width: 600px; margin: 0 auto 40px;">
-                <div style="background: #f5f3ff; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                    <h3 style="color: #6d28d9; margin-bottom: 10px;">📋 How It Works</h3>
-                    <ul style="text-align: left; color: #4b5563; line-height: 1.8;">
-                        <li><strong>Day 1-82:</strong> Daily 15-question tests based on schedule</li>
-                        <li><strong>Weekends:</strong> Grand tests of 180 questions</li>
-                        <li><strong>Scoring:</strong> +4 for correct, -1 for wrong, 0 for unattempted</li>
-                        <li><strong>Progress:</strong> Automatic tracking with Firebase</li>
-                        <li><strong>Certificate:</strong> Upon completion of 82 days</li>
-                    </ul>
-                </div>
-                
-                <div class="form-group" style="margin-bottom: 30px;">
-                    <input type="text" id="studentName" placeholder="Enter your full name" 
-                           style="padding: 15px; font-size: 18px; width: 100%; max-width: 400px; border: 2px solid #c7d2fe; border-radius: 8px;">
-                </div>
-                
-                <button id="startBtn" onclick="startTest()" style="padding: 15px 40px; font-size: 18px;" class="nav-btn">
-                    🚀 Start Today's Test
-                </button>
-                
-                <p style="margin-top: 30px; color: #6b7280;">Or continue from where you left:</p>
-                <div id="daySelector" class="day-selector">
-                    <!-- Days will be populated -->
-                </div>
+            <input type="text" id="studentName" class="name-input" placeholder="Enter your full name">
+            
+            <button onclick="startTest()" class="start-btn">
+                🚀 Start Today's Test
+            </button>
+            
+            <p style="margin-top: 25px; color: #6b7280; font-size: clamp(14px, 3.5vw, 16px);">
+                Or continue from where you left:
+            </p>
+            <div id="daySelector" class="day-selector">
+                <!-- Days will be populated -->
             </div>
         </div>
     </div>
@@ -296,13 +593,23 @@
         <div class="timer" id="timer">40:00</div>
         
         <div class="progress-container">
-            <div style="display: flex; justify-content: space-between;">
+            <div class="progress-stats">
                 <span>Question <span id="currentQ">1</span> of 15</span>
                 <span><span id="answeredCount">0</span> answered</span>
             </div>
             <div class="progress-bar">
                 <div class="progress-fill" id="progressFill"></div>
             </div>
+        </div>
+        
+        <!-- SUBMIT BUTTON AREA -->
+        <div class="submit-area">
+            <button onclick="submitTest()" class="submit-btn">
+                🏁 Submit Test
+            </button>
+            <p class="submit-note">
+                You can submit anytime. Timer will auto-submit at 0:00.
+            </p>
         </div>
         
         <div class="question-container">
@@ -315,8 +622,12 @@
         </div>
         
         <div class="navigation">
-            <button id="prevBtn" onclick="prevQuestion()" class="nav-btn">← Previous</button>
-            <button id="nextBtn" onclick="nextQuestion()" class="nav-btn">Next →</button>
+            <button id="prevBtn" onclick="prevQuestion()" class="nav-btn">
+                ← Previous
+            </button>
+            <button id="nextBtn" onclick="nextQuestion()" class="nav-btn">
+                Next →
+            </button>
         </div>
     </div>
     
@@ -333,60 +644,58 @@
                 <div class="score-label">Score</div>
             </div>
             
-            <h2 id="scoreText">Score: 0/60</h2>
-            <p style="color: #6b7280; margin: 10px 0;">+4 for correct, -1 for wrong</p>
+            <h2 id="scoreText" style="margin-bottom: 10px; color: #1f2937;">Score: 0/60</h2>
+            <p style="color: #6b7280; margin-bottom: 20px;">+4 for correct, -1 for wrong</p>
             
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 500px; margin: 30px auto;">
-                <div style="background: #d1fae5; padding: 15px; border-radius: 10px;">
-                    <div style="font-size: 24px; color: #065f46; font-weight: bold;" id="correctCount">0</div>
-                    <div style="color: #065f46;">Correct</div>
+            <div class="score-stats">
+                <div class="stat-box stat-correct">
+                    <div class="stat-value" id="correctCount">0</div>
+                    <div class="stat-label">Correct</div>
                 </div>
-                <div style="background: #fee2e2; padding: 15px; border-radius: 10px;">
-                    <div style="font-size: 24px; color: #991b1b; font-weight: bold;" id="wrongCount">0</div>
-                    <div style="color: #991b1b;">Wrong</div>
+                <div class="stat-box stat-wrong">
+                    <div class="stat-value" id="wrongCount">0</div>
+                    <div class="stat-label">Wrong</div>
                 </div>
-                <div style="background: #fef3c7; padding: 15px; border-radius: 10px;">
-                    <div style="font-size: 24px; color: #92400e; font-weight: bold;" id="unattemptedCount">0</div>
-                    <div style="color: #92400e;">Unattempted</div>
+                <div class="stat-box stat-unattempted">
+                    <div class="stat-value" id="unattemptedCount">0</div>
+                    <div class="stat-label">Unattempted</div>
                 </div>
             </div>
             
-            <div style="margin: 40px 0;">
-                <button onclick="nextDayTest()" class="nav-btn" style="background: #10b981;">
+            <div class="results-actions">
+                <button onclick="nextDayTest()" class="action-btn action-btn-next">
                     ✅ Proceed to Next Day
                 </button>
-                <button onclick="reviewTest()" class="nav-btn" style="background: #6b7280;">
+                <button onclick="reviewTest()" class="action-btn action-btn-review">
                     📊 Review Answers
                 </button>
-                <button onclick="restartTest()" class="nav-btn" style="background: #ef4444;">
+                <button onclick="restartTest()" class="action-btn action-btn-retry">
                     🔄 Retry This Test
                 </button>
             </div>
             
-            <div id="detailedResults" style="text-align: left; max-width: 700px; margin: 0 auto;">
+            <div id="detailedResults" class="detailed-results">
                 <!-- Detailed results will be shown here -->
             </div>
         </div>
     </div>
 
-    <!-- ========== ALL JAVASCRIPT IN ONE FILE ========== -->
+    <!-- ========== ALL JAVASCRIPT ========== -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     
     <script>
         // ========== FIREBASE CONFIG ==========
-    
-         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-    apiKey: "AIzaSyDQllntvhYYX2_SgZh7eUna1ZCl1_Pk5iE",
-    authDomain: "neet-practise-4x.firebaseapp.com",
-    databaseURL: "https://neet-practise-4x-default-rtdb.asia-southeast1.firebasedatabase.app", // ← THIS LINE IS CRITICAL
-    projectId: "neet-practise-4x",
-    storageBucket: "neet-practise-4x.firebasestorage.app",
-    messagingSenderId: "580564387981",
-    appId: "1:580564387981:web:14bca0642e18e2b568bac4",
-    measurementId: "G-XN5YWRFQHN"
-};
+        const firebaseConfig = {
+            apiKey: "AIzaSyDQllntvhYYX2_SgZh7eUna1ZCl1_Pk5iE",
+            authDomain: "neet-practise-4x.firebaseapp.com",
+            databaseURL: "https://neet-practise-4x-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "neet-practise-4x",
+            storageBucket: "neet-practise-4x.firebasestorage.app",
+            messagingSenderId: "580564387981",
+            appId: "1:580564387981:web:14bca0642e18e2b568bac4",
+            measurementId: "G-XN5YWRFQHN"
+        };
         
         // Initialize Firebase
         if (!firebase.apps.length) {
@@ -401,7 +710,7 @@ const firebaseConfig = {
         let userAnswers = {};
         let questionsData = [];
         let timerInterval;
-        let timeLeft = 40 * 60; // 40 minutes
+        let timeLeft = 40 * 60;
         let userId = '';
         let allQuestions = [];
         
@@ -442,6 +751,10 @@ const firebaseConfig = {
                     // Load today's test
                     loadTest();
                     startTimer();
+                })
+                .catch(error => {
+                    console.error('Error starting test:', error);
+                    alert('Error starting test. Please check your connection.');
                 });
         }
         
@@ -453,7 +766,15 @@ const firebaseConfig = {
             const schedule = [
                 {day:1, topic:"Gaseous State (Easy)", subject:"Physical Chemistry"},
                 {day:2, topic:"Solutions (Medium)", subject:"Physical Chemistry"},
-                // ... add all 82 days
+                {day:3, topic:"Chemical Kinetics (Medium)", subject:"Physical Chemistry"},
+                {day:4, topic:"Chemical Kinetics (Medium)", subject:"Physical Chemistry"},
+                {day:5, topic:"Electrochemistry (Hard)", subject:"Physical Chemistry"},
+                {day:6, topic:"Electrochemistry (Hard)", subject:"Physical Chemistry"},
+                {day:7, topic:"Thermodynamics (Hard)", subject:"Physical Chemistry"},
+                {day:8, topic:"Thermodynamics (Hard)", subject:"Physical Chemistry"},
+                {day:9, topic:"Physical Chem PYQs", subject:"Physical Chemistry"},
+                {day:10, topic:"Physical Chem Revision", subject:"Physical Chemistry"},
+                // ... Add all 82 days
             ];
             
             const dayInfo = schedule.find(d => d.day === currentDay) || schedule[0];
@@ -468,6 +789,8 @@ const firebaseConfig = {
                     
                     if (!questionsData || allQuestions.length === 0) {
                         alert('Questions for today are not available yet. Please try another day.');
+                        document.getElementById('startScreen').style.display = 'block';
+                        document.getElementById('testScreen').style.display = 'none';
                         return;
                     }
                     
@@ -523,11 +846,12 @@ const firebaseConfig = {
         function selectOption(qNum, option) {
             userAnswers[qNum] = option;
             
-            // Update UI
+            // Update UI - remove selection from all options
             document.querySelectorAll('.option').forEach(opt => {
                 opt.classList.remove('selected');
             });
             
+            // Add selection to clicked option
             event.currentTarget.classList.add('selected');
             
             // Update progress
@@ -545,7 +869,7 @@ const firebaseConfig = {
         
         // ========== TIMER FUNCTIONS ==========
         function startTimer() {
-            timeLeft = 40 * 60; // Reset timer
+            timeLeft = 40 * 60;
             
             timerInterval = setInterval(() => {
                 timeLeft--;
@@ -560,10 +884,10 @@ const firebaseConfig = {
                 const timerElement = document.getElementById('timer');
                 timerElement.classList.remove('warning', 'danger');
                 
-                if (timeLeft < 600) { // 10 minutes
+                if (timeLeft < 600) {
                     timerElement.classList.add('warning');
                 }
-                if (timeLeft < 300) { // 5 minutes
+                if (timeLeft < 300) {
                     timerElement.classList.add('danger');
                 }
                 
@@ -575,21 +899,12 @@ const firebaseConfig = {
             }, 1000);
         }
         
-        // ========== NAVIGATION ==========
-        function nextQuestion() {
-            if (currentQuestion < allQuestions.length) {
-                displayQuestion(currentQuestion + 1);
-            }
-        }
-        
-        function prevQuestion() {
-            if (currentQuestion > 1) {
-                displayQuestion(currentQuestion - 1);
-            }
-        }
-        
         // ========== SUBMIT TEST ==========
         function submitTest() {
+            if (!confirm('Are you sure you want to submit the test?')) {
+                return;
+            }
+            
             clearInterval(timerInterval);
             
             // Calculate score
@@ -653,7 +968,16 @@ const firebaseConfig = {
                         .then(() => {
                             // Show results
                             showResults(totalScore, maxScore, correctCount, wrongCount, unattemptedCount, scorePercent);
+                        })
+                        .catch(error => {
+                            console.error('Error saving results:', error);
+                            // Still show results even if save fails
+                            showResults(totalScore, maxScore, correctCount, wrongCount, unattemptedCount, scorePercent);
                         });
+                })
+                .catch(error => {
+                    console.error('Error getting completed days:', error);
+                    showResults(totalScore, maxScore, correctCount, wrongCount, unattemptedCount, scorePercent);
                 });
         }
         
@@ -672,6 +996,10 @@ const firebaseConfig = {
             // Update day info
             const schedule = [
                 {day:1, topic:"Gaseous State"},
+                {day:2, topic:"Solutions"},
+                {day:3, topic:"Chemical Kinetics"},
+                {day:4, topic:"Chemical Kinetics"},
+                {day:5, topic:"Electrochemistry"},
                 // ... all days
             ];
             const dayInfo = schedule.find(d => d.day === currentDay) || schedule[0];
@@ -683,7 +1011,7 @@ const firebaseConfig = {
         
         function showDetailedResults() {
             const container = document.getElementById('detailedResults');
-            let html = '<h3 style="color: #4f46e5; margin-top: 40px; margin-bottom: 20px;">Detailed Analysis:</h3>';
+            let html = '<h3 style="color: #4f46e5; margin-top: 30px; margin-bottom: 20px; font-size: 18px;">Detailed Analysis:</h3>';
             
             allQuestions.forEach((question, index) => {
                 const qNum = index + 1;
@@ -691,31 +1019,40 @@ const firebaseConfig = {
                 const correctAnswer = question.answer;
                 const isCorrect = userAnswer === correctAnswer;
                 
-                let bgColor = '#f3f4f6'; // Default for unattempted
+                let bgColor = '#f3f4f6';
                 let status = 'Unattempted';
+                let statusColor = '#92400e';
                 
                 if (userAnswer) {
                     if (isCorrect) {
                         bgColor = '#d1fae5';
                         status = 'Correct';
+                        statusColor = '#065f46';
                     } else {
                         bgColor = '#fee2e2';
                         status = 'Wrong';
+                        statusColor = '#991b1b';
                     }
                 }
                 
                 html += `
-                    <div style="background: ${bgColor}; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                            <strong>Q${qNum}: ${question.question.substring(0, 50)}...</strong>
-                            <span style="font-weight: bold; color: ${isCorrect ? '#065f46' : (userAnswer ? '#991b1b' : '#92400e')}">
+                    <div class="result-item">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; align-items: flex-start;">
+                            <div style="font-weight: bold; color: #1f2937;">
+                                Q${qNum}: ${question.question.substring(0, 60)}...
+                            </div>
+                            <span style="font-weight: bold; color: ${statusColor}; background: ${bgColor}; padding: 4px 12px; border-radius: 20px; font-size: 14px;">
                                 ${status}
                             </span>
                         </div>
-                        <div style="color: #4b5563;">
-                            <div>Your Answer: ${userAnswer || 'Not attempted'}</div>
-                            <div>Correct Answer: ${correctAnswer}</div>
-                            ${question.explanation ? `<div style="margin-top: 5px; font-size: 14px; color: #6b7280;"><strong>Explanation:</strong> ${question.explanation}</div>` : ''}
+                        <div style="color: #4b5563; font-size: 15px;">
+                            <div style="margin-bottom: 5px;">Your Answer: <strong>${userAnswer || 'Not attempted'}</strong></div>
+                            <div style="margin-bottom: 5px;">Correct Answer: <strong style="color: #065f46;">${correctAnswer}</strong></div>
+                            ${question.explanation ? 
+                                `<div style="margin-top: 8px; padding: 8px; background: #e0f2fe; border-radius: 6px; font-size: 14px;">
+                                    <strong>Explanation:</strong> ${question.explanation}
+                                </div>` 
+                                : ''}
                         </div>
                     </div>
                 `;
@@ -724,13 +1061,25 @@ const firebaseConfig = {
             container.innerHTML = html;
         }
         
+        // ========== NAVIGATION ==========
+        function nextQuestion() {
+            if (currentQuestion < allQuestions.length) {
+                displayQuestion(currentQuestion + 1);
+            }
+        }
+        
+        function prevQuestion() {
+            if (currentQuestion > 1) {
+                displayQuestion(currentQuestion - 1);
+            }
+        }
+        
         // ========== RESULTS NAVIGATION ==========
         function nextDayTest() {
             currentDay++;
             
             if (currentDay > 82) {
                 // All days completed - show certificate
-                alert('🎉 Congratulations! You have completed all 82 days!');
                 showCertificate();
                 return;
             }
@@ -746,8 +1095,8 @@ const firebaseConfig = {
         }
         
         function reviewTest() {
-            // Could implement review mode
-            alert('Review mode would show all questions with explanations');
+            // Scroll to detailed results
+            document.getElementById('detailedResults').scrollIntoView({ behavior: 'smooth' });
         }
         
         function restartTest() {
@@ -770,27 +1119,74 @@ const firebaseConfig = {
         }
         
         function showCertificate() {
-            // Generate and display certificate
+            // Generate certificate
             const certHTML = `
-                <div style="text-align: center; padding: 40px;">
-                    <h1 style="color: #4f46e5;">🎓 Certificate of Completion</h1>
-                    <p>This certifies that</p>
-                    <h2 style="color: #7c3aed;">${studentName}</h2>
-                    <p>has successfully completed the 82-day NEET preparation program</p>
-                    <div style="border: 3px solid gold; padding: 30px; margin: 30px; border-radius: 15px;">
-                        <p>Certificate ID: NEET2026-${userId.substring(0, 8).toUpperCase()}</p>
-                        <p>Issued on: ${new Date().toLocaleDateString()}</p>
+                <div style="text-align: center; padding: 40px 20px;">
+                    <div style="border: 4px solid gold; padding: 30px; border-radius: 20px; background: white; max-width: 600px; margin: 0 auto;">
+                        <h1 style="color: #4f46e5; margin-bottom: 20px; font-size: 28px;">🎓 Certificate of Completion</h1>
+                        <p style="font-size: 18px; color: #6b7280;">This certifies that</p>
+                        <h2 style="color: #7c3aed; margin: 15px 0; font-size: 32px;">${studentName}</h2>
+                        <p style="font-size: 16px; color: #4b5563; margin-bottom: 25px;">
+                            has successfully completed the 82-day NEET preparation program
+                        </p>
+                        <div style="background: #f8fafc; padding: 20px; border-radius: 15px; margin: 20px 0;">
+                            <p style="color: #6b7280; margin-bottom: 5px;">Certificate ID</p>
+                            <p style="font-size: 20px; font-weight: bold; color: #1f2937;">NEET2026-${userId.substring(0, 8).toUpperCase()}</p>
+                            <p style="color: #6b7280; margin-top: 15px;">Issued on: ${new Date().toLocaleDateString()}</p>
+                        </div>
+                        <button onclick="window.print()" style="padding: 15px 30px; background: #4f46e5; color: white; border: none; border-radius: 10px; font-size: 16px; cursor: pointer; margin-top: 20px;">
+                            🖨️ Print Certificate
+                        </button>
                     </div>
-                    <button onclick="printCertificate()" class="nav-btn">🖨️ Print Certificate</button>
+                    <button onclick="location.reload()" style="padding: 12px 25px; background: #10b981; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 30px;">
+                        🏁 Start New Session
+                    </button>
                 </div>
             `;
             
             document.getElementById('resultsScreen').innerHTML = certHTML;
         }
         
-        function printCertificate() {
-            window.print();
+        // Initialize day selector
+        function initializeDaySelector() {
+            const container = document.getElementById('daySelector');
+            container.innerHTML = '';
+            
+            for (let i = 1; i <= 82; i++) {
+                const dayBtn = document.createElement('div');
+                dayBtn.className = 'day-btn locked';
+                dayBtn.textContent = i;
+                dayBtn.onclick = () => {
+                    // Check if questions exist for this day
+                    database.ref(`questions/day${i}`).once('value')
+                        .then(snapshot => {
+                            if (snapshot.exists() && snapshot.numChildren() > 0) {
+                                currentDay = i;
+                                startTest();
+                            } else {
+                                alert(`Day ${i} questions are not available yet.`);
+                            }
+                        });
+                };
+                container.appendChild(dayBtn);
+            }
+            
+            // Check which days have questions
+            for (let i = 1; i <= 82; i++) {
+                database.ref(`questions/day${i}`).once('value')
+                    .then(snapshot => {
+                        if (snapshot.exists() && snapshot.numChildren() > 0) {
+                            const dayBtn = container.children[i - 1];
+                            dayBtn.className = 'day-btn available';
+                        }
+                    });
+            }
         }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDaySelector();
+        });
     </script>
 </body>
 </html>
