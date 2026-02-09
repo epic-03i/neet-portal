@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NEET Daily Test</title>
+    <style>
+        /* ========== ALL CSS IN ONE FILE ========== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { 
+            max-width: 900px; 
+            margin: 20px auto; 
+            background: white; 
+            border-radius: 15px; 
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        /* Header */
+        .header { 
+            background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+            color: white; 
+            padding: 25px; 
+            text-align: center;
+        }
+        .header h1 { 
+            font-size: 28px; 
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        /* Timer */
+        .timer { 
+            background: #ef4444; 
+            color: white; 
+            padding: 15px; 
+            font-size: 28px; 
+            text-align: center; 
+            font-weight: bold;
+            font-family: monospace;
+        }
+        .timer.warning { background: #f59e0b; }
+        .timer.danger { background: #dc2626; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        
+        /* Progress */
+        .progress-container { 
+            padding: 15px 25px; 
+            background: #f8fafc; 
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .progress-bar { 
+            height: 10px; 
+            background: #e2e8f0; 
+            border-radius: 5px; 
+            overflow: hidden; 
+            margin-top: 10px;
+        }
+        .progress-fill { 
+            height: 100%; 
+            background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        /* Question Container */
+        .question-container { 
+            padding: 30px; 
+            min-height: 400px;
+        }
+        .question-number { 
+            color: #4f46e5; 
+            font-size: 18px; 
+            margin-bottom: 10px;
+        }
+        .question-text { 
+            font-size: 20px; 
+            line-height: 1.6; 
+            margin-bottom: 25px;
+            color: #1f2937;
+        }
+        
+        /* Options */
+        .options { 
+            display: grid; 
+            gap: 12px;
+        }
+        .option { 
+            padding: 15px; 
+            border: 2px solid #e5e7eb; 
+            border-radius: 10px; 
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        .option:hover { 
+            border-color: #c7d2fe; 
+            background: #f5f3ff;
+        }
+        .option.selected { 
+            border-color: #4f46e5; 
+            background: #eef2ff;
+        }
+        .option.correct { 
+            border-color: #10b981; 
+            background: #d1fae5;
+        }
+        .option.wrong { 
+            border-color: #ef4444; 
+            background: #fee2e2;
+        }
+        .option-letter { 
+            width: 36px; 
+            height: 36px; 
+            background: #4f46e5; 
+            color: white; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin-right: 15px;
+            font-weight: bold;
+        }
+        
+        /* Navigation */
+        .navigation { 
+            padding: 20px 30px; 
+            background: #f8fafc; 
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .nav-btn { 
+            padding: 12px 25px; 
+            background: #4f46e5; 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .nav-btn:hover { 
+            background: #4338ca; 
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
+        }
+        .nav-btn:disabled { 
+            background: #9ca3af; 
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Results */
+        .results-container { 
+            padding: 40px; 
+            text-align: center;
+        }
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+        }
+        .score-percentage { 
+            font-size: 48px; 
+            font-weight: bold;
+        }
+        .score-label { 
+            font-size: 18px;
+        }
+        
+        /* Day Selector */
+        .day-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        .day-btn {
+            width: 60px;
+            height: 60px;
+            border: 3px solid;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .day-btn.available { 
+            background: #d1fae5; 
+            border-color: #10b981;
+            color: #065f46;
+        }
+        .day-btn.completed { 
+            background: #bfdbfe; 
+            border-color: #3b82f6;
+            color: #1e40af;
+        }
+        .day-btn.current { 
+            background: #fef3c7; 
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+        .day-btn.locked { 
+            background: #f3f4f6; 
+            border-color: #d1d5db;
+            color: #6b7280;
+            cursor: not-allowed;
+        }
+        .day-btn:hover:not(.locked) { 
+            transform: scale(1.1); 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { margin: 10px; border-radius: 10px; }
+            .header { padding: 20px; }
+            .header h1 { font-size: 22px; flex-direction: column; }
+            .question-container { padding: 20px; }
+            .question-text { font-size: 18px; }
+            .day-btn { width: 50px; height: 50px; font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Start Screen -->
+    <div id="startScreen" class="container" style="display: block;">
+        <div class="header">
+            <h1>🎓 NEET Daily Test Portal</h1>
+            <p>Complete 82 days of preparation with daily tests</p>
+        </div>
+        
+        <div style="padding: 40px; text-align: center;">
+            <h2 style="color: #4f46e5; margin-bottom: 30px;">Welcome to Your NEET Preparation Journey!</h2>
+            
+            <div style="max-width: 600px; margin: 0 auto 40px;">
+                <div style="background: #f5f3ff; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <h3 style="color: #6d28d9; margin-bottom: 10px;">📋 How It Works</h3>
+                    <ul style="text-align: left; color: #4b5563; line-height: 1.8;">
+                        <li><strong>Day 1-82:</strong> Daily 15-question tests based on schedule</li>
+                        <li><strong>Weekends:</strong> Grand tests of 180 questions</li>
+                        <li><strong>Scoring:</strong> +4 for correct, -1 for wrong, 0 for unattempted</li>
+                        <li><strong>Progress:</strong> Automatic tracking with Firebase</li>
+                        <li><strong>Certificate:</strong> Upon completion of 82 days</li>
+                    </ul>
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 30px;">
+                    <input type="text" id="studentName" placeholder="Enter your full name" 
+                           style="padding: 15px; font-size: 18px; width: 100%; max-width: 400px; border: 2px solid #c7d2fe; border-radius: 8px;">
+                </div>
+                
+                <button id="startBtn" onclick="startTest()" style="padding: 15px 40px; font-size: 18px;" class="nav-btn">
+                    🚀 Start Today's Test
+                </button>
+                
+                <p style="margin-top: 30px; color: #6b7280;">Or continue from where you left:</p>
+                <div id="daySelector" class="day-selector">
+                    <!-- Days will be populated -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Test Screen -->
+    <div id="testScreen" class="container" style="display: none;">
+        <div class="header">
+            <h1><span id="currentDayHeader">Day 1</span>: <span id="currentTopic">Gaseous State</span></h1>
+            <p id="currentSubject">Physical Chemistry</p>
+        </div>
+        
+        <div class="timer" id="timer">40:00</div>
+        
+        <div class="progress-container">
+            <div style="display: flex; justify-content: space-between;">
+                <span>Question <span id="currentQ">1</span> of 15</span>
+                <span><span id="answeredCount">0</span> answered</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+        
+        <div class="question-container">
+            <div class="question-number" id="questionNumber">Question 1</div>
+            <div class="question-text" id="questionText">Loading question...</div>
+            
+            <div class="options" id="optionsContainer">
+                <!-- Options will be loaded here -->
+            </div>
+        </div>
+        
+        <div class="navigation">
+            <button id="prevBtn" onclick="prevQuestion()" class="nav-btn">← Previous</button>
+            <button id="nextBtn" onclick="nextQuestion()" class="nav-btn">Next →</button>
+        </div>
+    </div>
+    
+    <!-- Results Screen -->
+    <div id="resultsScreen" class="container" style="display: none;">
+        <div class="header">
+            <h1>🎉 Test Completed!</h1>
+            <p id="resultsDay">Day 1: Gaseous State</p>
+        </div>
+        
+        <div class="results-container">
+            <div class="score-circle">
+                <div class="score-percentage" id="scorePercent">0%</div>
+                <div class="score-label">Score</div>
+            </div>
+            
+            <h2 id="scoreText">Score: 0/60</h2>
+            <p style="color: #6b7280; margin: 10px 0;">+4 for correct, -1 for wrong</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 500px; margin: 30px auto;">
+                <div style="background: #d1fae5; padding: 15px; border-radius: 10px;">
+                    <div style="font-size: 24px; color: #065f46; font-weight: bold;" id="correctCount">0</div>
+                    <div style="color: #065f46;">Correct</div>
+                </div>
+                <div style="background: #fee2e2; padding: 15px; border-radius: 10px;">
+                    <div style="font-size: 24px; color: #991b1b; font-weight: bold;" id="wrongCount">0</div>
+                    <div style="color: #991b1b;">Wrong</div>
+                </div>
+                <div style="background: #fef3c7; padding: 15px; border-radius: 10px;">
+                    <div style="font-size: 24px; color: #92400e; font-weight: bold;" id="unattemptedCount">0</div>
+                    <div style="color: #92400e;">Unattempted</div>
+                </div>
+            </div>
+            
+            <div style="margin: 40px 0;">
+                <button onclick="nextDayTest()" class="nav-btn" style="background: #10b981;">
+                    ✅ Proceed to Next Day
+                </button>
+                <button onclick="reviewTest()" class="nav-btn" style="background: #6b7280;">
+                    📊 Review Answers
+                </button>
+                <button onclick="restartTest()" class="nav-btn" style="background: #ef4444;">
+                    🔄 Retry This Test
+                </button>
+            </div>
+            
+            <div id="detailedResults" style="text-align: left; max-width: 700px; margin: 0 auto;">
+                <!-- Detailed results will be shown here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== ALL JAVASCRIPT IN ONE FILE ========== -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    
+    <script>
+        // ========== FIREBASE CONFIG ==========
+        const firebaseConfig = {
+            apiKey: "AIzaSyCgDgQ6LwB7qM6q7q7q7q7q7q7q7q7q7q7",
+            authDomain: "neet-portal-demo.firebaseapp.com",
+            databaseURL: "https://neet-portal-demo-default-rtdb.firebaseio.com",
+            projectId: "neet-portal-demo",
+            storageBucket: "neet-portal-demo.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abc123def456ghi789"
+        };
+        
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const database = firebase.database();
+        
+        // ========== GLOBAL VARIABLES ==========
+        let studentName = '';
+        let currentDay = 1;
+        let currentQuestion = 1;
+        let userAnswers = {};
+        let questionsData = [];
+        let timerInterval;
+        let timeLeft = 40 * 60; // 40 minutes
+        let userId = '';
+        let allQuestions = [];
+        
+        // ========== START TEST ==========
+        function startTest() {
+            studentName = document.getElementById('studentName').value.trim();
+            
+            if (!studentName) {
+                alert('Please enter your name to begin.');
+                return;
+            }
+            
+            // Create user ID
+            userId = studentName.replace(/\s+/g, '_').toLowerCase() + '_' + Date.now();
+            
+            // Check if user exists
+            database.ref('users/' + userId).once('value')
+                .then(snapshot => {
+                    if (snapshot.exists()) {
+                        const userData = snapshot.val();
+                        currentDay = userData.currentDay || 1;
+                        alert(`Welcome back ${studentName}! Continuing from Day ${currentDay}`);
+                    } else {
+                        // New user
+                        database.ref('users/' + userId).set({
+                            name: studentName,
+                            currentDay: 1,
+                            startDate: new Date().toISOString(),
+                            lastActive: new Date().toISOString(),
+                            completedDays: []
+                        });
+                    }
+                    
+                    // Hide start screen, show test screen
+                    document.getElementById('startScreen').style.display = 'none';
+                    document.getElementById('testScreen').style.display = 'block';
+                    
+                    // Load today's test
+                    loadTest();
+                    startTimer();
+                });
+        }
+        
+        function loadTest() {
+            // Update header
+            document.getElementById('currentDayHeader').textContent = `Day ${currentDay}`;
+            
+            // Load schedule info
+            const schedule = [
+                {day:1, topic:"Gaseous State (Easy)", subject:"Physical Chemistry"},
+                {day:2, topic:"Solutions (Medium)", subject:"Physical Chemistry"},
+                // ... add all 82 days
+            ];
+            
+            const dayInfo = schedule.find(d => d.day === currentDay) || schedule[0];
+            document.getElementById('currentTopic').textContent = dayInfo.topic;
+            document.getElementById('currentSubject').textContent = dayInfo.subject;
+            
+            // Load questions
+            database.ref(`questions/day${currentDay}`).once('value')
+                .then(snapshot => {
+                    questionsData = snapshot.val();
+                    allQuestions = Object.values(questionsData || {});
+                    
+                    if (!questionsData || allQuestions.length === 0) {
+                        alert('Questions for today are not available yet. Please try another day.');
+                        return;
+                    }
+                    
+                    // Reset answers
+                    userAnswers = {};
+                    
+                    // Display first question
+                    displayQuestion(1);
+                    updateProgress();
+                })
+                .catch(error => {
+                    console.error('Error loading questions:', error);
+                    alert('Error loading questions. Please try again.');
+                });
+        }
+        
+        function displayQuestion(qNum) {
+            if (qNum < 1 || qNum > allQuestions.length) return;
+            
+            currentQuestion = qNum;
+            const question = allQuestions[qNum - 1];
+            
+            // Update UI
+            document.getElementById('questionNumber').textContent = `Question ${qNum}`;
+            document.getElementById('questionText').textContent = question.question;
+            document.getElementById('currentQ').textContent = qNum;
+            
+            // Display options
+            const optionsContainer = document.getElementById('optionsContainer');
+            let optionsHTML = '';
+            
+            const letters = ['A', 'B', 'C', 'D'];
+            letters.forEach(letter => {
+                const optionText = question.options[letter];
+                const isSelected = userAnswers[qNum] === letter;
+                const optionClass = `option ${isSelected ? 'selected' : ''}`;
+                
+                optionsHTML += `
+                    <div class="${optionClass}" onclick="selectOption(${qNum}, '${letter}')">
+                        <div class="option-letter">${letter}</div>
+                        <div class="option-text">${optionText}</div>
+                    </div>
+                `;
+            });
+            
+            optionsContainer.innerHTML = optionsHTML;
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = qNum === 1;
+            document.getElementById('nextBtn').disabled = qNum === allQuestions.length;
+        }
+        
+        function selectOption(qNum, option) {
+            userAnswers[qNum] = option;
+            
+            // Update UI
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            event.currentTarget.classList.add('selected');
+            
+            // Update progress
+            updateProgress();
+        }
+        
+        function updateProgress() {
+            const answered = Object.keys(userAnswers).length;
+            const total = allQuestions.length;
+            
+            document.getElementById('answeredCount').textContent = answered;
+            const progressPercent = (answered / total) * 100;
+            document.getElementById('progressFill').style.width = `${progressPercent}%`;
+        }
+        
+        // ========== TIMER FUNCTIONS ==========
+        function startTimer() {
+            timeLeft = 40 * 60; // Reset timer
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                const timerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                document.getElementById('timer').textContent = timerText;
+                
+                // Update timer color
+                const timerElement = document.getElementById('timer');
+                timerElement.classList.remove('warning', 'danger');
+                
+                if (timeLeft < 600) { // 10 minutes
+                    timerElement.classList.add('warning');
+                }
+                if (timeLeft < 300) { // 5 minutes
+                    timerElement.classList.add('danger');
+                }
+                
+                // Time's up
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitTest();
+                }
+            }, 1000);
+        }
+        
+        // ========== NAVIGATION ==========
+        function nextQuestion() {
+            if (currentQuestion < allQuestions.length) {
+                displayQuestion(currentQuestion + 1);
+            }
+        }
+        
+        function prevQuestion() {
+            if (currentQuestion > 1) {
+                displayQuestion(currentQuestion - 1);
+            }
+        }
+        
+        // ========== SUBMIT TEST ==========
+        function submitTest() {
+            clearInterval(timerInterval);
+            
+            // Calculate score
+            let correctCount = 0;
+            let wrongCount = 0;
+            let unattemptedCount = 0;
+            let totalScore = 0;
+            
+            allQuestions.forEach((question, index) => {
+                const qNum = index + 1;
+                const userAnswer = userAnswers[qNum];
+                const correctAnswer = question.answer;
+                
+                if (!userAnswer) {
+                    unattemptedCount++;
+                } else if (userAnswer === correctAnswer) {
+                    correctCount++;
+                    totalScore += 4;
+                } else {
+                    wrongCount++;
+                    totalScore -= 1;
+                }
+            });
+            
+            // Ensure score is not negative
+            totalScore = Math.max(0, totalScore);
+            
+            // Calculate percentage
+            const maxScore = allQuestions.length * 4;
+            const scorePercent = Math.round((totalScore / maxScore) * 100);
+            
+            // Save results to Firebase
+            const resultsData = {
+                day: currentDay,
+                score: totalScore,
+                total: maxScore,
+                correct: correctCount,
+                wrong: wrongCount,
+                unattempted: unattemptedCount,
+                timeSpent: (40 * 60 - timeLeft),
+                dateCompleted: new Date().toISOString(),
+                answers: userAnswers
+            };
+            
+            const updates = {};
+            updates[`users/${userId}/scores/day${currentDay}`] = resultsData;
+            updates[`users/${userId}/currentDay`] = currentDay + 1;
+            updates[`users/${userId}/lastActive`] = new Date().toISOString();
+            
+            // Add to completed days if not already
+            database.ref(`users/${userId}/completedDays`).once('value')
+                .then(snapshot => {
+                    const completedDays = snapshot.val() || [];
+                    if (!completedDays.includes(currentDay)) {
+                        completedDays.push(currentDay);
+                        updates[`users/${userId}/completedDays`] = completedDays;
+                    }
+                    
+                    // Save all updates
+                    database.ref().update(updates)
+                        .then(() => {
+                            // Show results
+                            showResults(totalScore, maxScore, correctCount, wrongCount, unattemptedCount, scorePercent);
+                        });
+                });
+        }
+        
+        function showResults(score, maxScore, correct, wrong, unattempted, percent) {
+            // Hide test screen, show results
+            document.getElementById('testScreen').style.display = 'none';
+            document.getElementById('resultsScreen').style.display = 'block';
+            
+            // Update results UI
+            document.getElementById('scorePercent').textContent = `${percent}%`;
+            document.getElementById('scoreText').textContent = `Score: ${score}/${maxScore}`;
+            document.getElementById('correctCount').textContent = correct;
+            document.getElementById('wrongCount').textContent = wrong;
+            document.getElementById('unattemptedCount').textContent = unattempted;
+            
+            // Update day info
+            const schedule = [
+                {day:1, topic:"Gaseous State"},
+                // ... all days
+            ];
+            const dayInfo = schedule.find(d => d.day === currentDay) || schedule[0];
+            document.getElementById('resultsDay').textContent = `Day ${currentDay}: ${dayInfo.topic}`;
+            
+            // Show detailed results
+            showDetailedResults();
+        }
+        
+        function showDetailedResults() {
+            const container = document.getElementById('detailedResults');
+            let html = '<h3 style="color: #4f46e5; margin-top: 40px; margin-bottom: 20px;">Detailed Analysis:</h3>';
+            
+            allQuestions.forEach((question, index) => {
+                const qNum = index + 1;
+                const userAnswer = userAnswers[qNum];
+                const correctAnswer = question.answer;
+                const isCorrect = userAnswer === correctAnswer;
+                
+                let bgColor = '#f3f4f6'; // Default for unattempted
+                let status = 'Unattempted';
+                
+                if (userAnswer) {
+                    if (isCorrect) {
+                        bgColor = '#d1fae5';
+                        status = 'Correct';
+                    } else {
+                        bgColor = '#fee2e2';
+                        status = 'Wrong';
+                    }
+                }
+                
+                html += `
+                    <div style="background: ${bgColor}; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <strong>Q${qNum}: ${question.question.substring(0, 50)}...</strong>
+                            <span style="font-weight: bold; color: ${isCorrect ? '#065f46' : (userAnswer ? '#991b1b' : '#92400e')}">
+                                ${status}
+                            </span>
+                        </div>
+                        <div style="color: #4b5563;">
+                            <div>Your Answer: ${userAnswer || 'Not attempted'}</div>
+                            <div>Correct Answer: ${correctAnswer}</div>
+                            ${question.explanation ? `<div style="margin-top: 5px; font-size: 14px; color: #6b7280;"><strong>Explanation:</strong> ${question.explanation}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        // ========== RESULTS NAVIGATION ==========
+        function nextDayTest() {
+            currentDay++;
+            
+            if (currentDay > 82) {
+                // All days completed - show certificate
+                alert('🎉 Congratulations! You have completed all 82 days!');
+                showCertificate();
+                return;
+            }
+            
+            // Reset for next day
+            resetTest();
+            loadTest();
+            startTimer();
+            
+            // Switch back to test screen
+            document.getElementById('resultsScreen').style.display = 'none';
+            document.getElementById('testScreen').style.display = 'block';
+        }
+        
+        function reviewTest() {
+            // Could implement review mode
+            alert('Review mode would show all questions with explanations');
+        }
+        
+        function restartTest() {
+            if (confirm('Are you sure you want to retry this test? Previous score will be overwritten.')) {
+                resetTest();
+                loadTest();
+                startTimer();
+                
+                document.getElementById('resultsScreen').style.display = 'none';
+                document.getElementById('testScreen').style.display = 'block';
+            }
+        }
+        
+        function resetTest() {
+            userAnswers = {};
+            questionsData = [];
+            allQuestions = [];
+            currentQuestion = 1;
+            clearInterval(timerInterval);
+        }
+        
+        function showCertificate() {
+            // Generate and display certificate
+            const certHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <h1 style="color: #4f46e5;">🎓 Certificate of Completion</h1>
+                    <p>This certifies that</p>
+                    <h2 style="color: #7c3aed;">${studentName}</h2>
+                    <p>has successfully completed the 82-day NEET preparation program</p>
+                    <div style="border: 3px solid gold; padding: 30px; margin: 30px; border-radius: 15px;">
+                        <p>Certificate ID: NEET2026-${userId.substring(0, 8).toUpperCase()}</p>
+                        <p>Issued on: ${new Date().toLocaleDateString()}</p>
+                    </div>
+                    <button onclick="printCertificate()" class="nav-btn">🖨️ Print Certificate</button>
+                </div>
+            `;
+            
+            document.getElementById('resultsScreen').innerHTML = certHTML;
+        }
+        
+        function printCertificate() {
+            window.print();
+        }
+    </script>
+</body>
+</html>
