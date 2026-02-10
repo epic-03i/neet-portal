@@ -715,7 +715,7 @@
             background: white;
             padding: 30px;
             border-radius: 15px;
-            max-width: 500px;
+            max-width = 500px;
             width: 90%;
             text-align: center;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
@@ -1762,10 +1762,14 @@
                         const questionsData = snapshot.val();
                         console.log('Raw data from Firebase:', questionsData);
                         
+                        // Initialize testQuestions array
+                        testQuestions = [];
+                        
                         // Check if the data has the structure you provided from admin panel
                         if (questionsData.questions && Array.isArray(questionsData.questions)) {
                             console.log('Detected admin panel structure with questions array');
-                            testQuestions = questionsData.questions.map((q, index) => {
+                            
+                            questionsData.questions.forEach((q, index) => {
                                 // Convert the options object to array format
                                 const optionsArray = [];
                                 if (q.options) {
@@ -1780,82 +1784,54 @@
                                     } else if (Array.isArray(q.options)) {
                                         optionsArray.push(...q.options);
                                     }
-                                }
-                                
-                                return {
-                                    id: q.id || index + 1,
-                                    text: q.question || q.text || `Question ${index + 1}`,
-                                    options: optionsArray.length > 0 ? optionsArray : [
+                                } else {
+                                    // If no options provided, create default options
+                                    optionsArray.push(
                                         {id: 'A', text: 'Option A'},
                                         {id: 'B', text: 'Option B'},
                                         {id: 'C', text: 'Option C'},
                                         {id: 'D', text: 'Option D'}
-                                    ],
+                                    );
+                                }
+                                
+                                // Add the question to testQuestions
+                                testQuestions.push({
+                                    id: q.id || index + 1,
+                                    text: q.question || q.text || `Question ${index + 1}`,
+                                    options: optionsArray,
                                     correctAnswer: q.answer || q.correctAnswer || 'A',
                                     explanation: q.explanation || 'No explanation available'
-                                };
+                                });
                             });
-                        } else if (Array.isArray(questionsData)) {
-                            console.log('Detected array structure');
-                            testQuestions = questionsData.map((q, index) => ({
-                                id: q.id || index + 1,
-                                text: q.text || q.question || `Question ${index + 1}`,
-                                options: q.options || [
-                                    {id: 'A', text: 'Option A'},
-                                    {id: 'B', text: 'Option B'},
-                                    {id: 'C', text: 'Option C'},
-                                    {id: 'D', text: 'Option D'}
-                                ],
-                                correctAnswer: q.correctAnswer || q.answer || 'A',
-                                explanation: q.explanation || 'No explanation available'
-                            }));
+                            
+                            console.log(`Successfully loaded ${testQuestions.length} questions for Day ${day}`);
+                            
+                            if (testQuestions.length === 0) {
+                                showNoQuestionsError(day);
+                                return;
+                            }
+                            
+                            loadQuestion();
+                            startTestTimer();
+                            
                         } else {
-                            console.log('Unknown structure, generating sample questions');
-                            generateSampleQuestions(day);
+                            console.log('No questions found in the expected format for Day', day);
+                            showNoQuestionsError(day);
                         }
-                        
-                        console.log(`Successfully loaded ${testQuestions.length} questions for Day ${day}`);
                     } else {
                         console.log(`No questions found for Day ${day} in Firebase`);
-                        generateSampleQuestions(day);
+                        showNoQuestionsError(day);
                     }
-                    
-                    if (testQuestions.length === 0) {
-                        console.log('No questions loaded, generating sample');
-                        generateSampleQuestions(day);
-                    }
-                    
-                    loadQuestion();
-                    startTestTimer();
                 })
                 .catch(error => {
                     console.error('Error loading questions from Firebase:', error);
-                    generateSampleQuestions(day);
-                    loadQuestion();
-                    startTestTimer();
+                    showNoQuestionsError(day);
                 });
         }
         
-        function generateSampleQuestions(day) {
-            console.log(`Generating sample questions for Day ${day}`);
-            const dayInfo = neetSchedule.find(d => d.day === day);
-            testQuestions = [];
-            
-            // Generate 30 sample questions
-            for (let i = 1; i <= 30; i++) {
-                testQuestions.push({
-                    id: i,
-                    text: `Question ${i}: This is a sample question for ${dayInfo?.topic || 'General Biology'}. Questions will be added by admin.`,
-                    options: [
-                        {id: 'A', text: 'Sample Option A'},
-                        {id: 'B', text: 'Sample Option B'},
-                        {id: 'C', text: 'Sample Option C'},
-                        {id: 'D', text: 'Sample Option D'}
-                    ],
-                    correctAnswer: ['A', 'B', 'C', 'D'][Math.floor(Math.random() * 4)],
-                    explanation: 'This is a sample explanation. Admin will add detailed explanations.'
-                });
-            }
+        function showNoQuestionsError(day) {
+            alert(`No questions available for Day ${day}. Please contact the admin to add questions.`);
+            backToDashboard();
         }
         
         function loadQuestion() {
@@ -2119,6 +2095,12 @@
             
             // Wait for questions to load, then set up review data
             setTimeout(() => {
+                if (testQuestions.length === 0) {
+                    alert('Cannot review test: Questions not found.');
+                    backToDashboard();
+                    return;
+                }
+                
                 testResults = {
                     day: day,
                     score: testData.score,
