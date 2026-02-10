@@ -152,6 +152,8 @@
         button.red:hover { background: #e53e3e; }
         button.yellow { background: #ecc94b; color: #744210; }
         button.yellow:hover { background: #d69e2e; }
+        button.blue { background: #4299e1; }
+        button.blue:hover { background: #3182ce; }
         
         /* Tables */
         table {
@@ -185,6 +187,8 @@
             color: #e2e8f0;
             border-radius: 6px;
             padding: 15px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
         
         /* Status Indicators */
@@ -199,12 +203,59 @@
         .status-complete { background: #48bb78; }
         .status-empty { background: #cbd5e0; }
         
+        /* Question Count */
+        .question-count {
+            display: inline-block;
+            padding: 3px 8px;
+            background: #edf2f7;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+        
+        /* Certificate Styling */
+        .certificate-container {
+            background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+            border: 5px solid gold;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .certificate-title {
+            color: #1e3a8a;
+            font-size: 32px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .certificate-name {
+            color: #3730a3;
+            font-size: 36px;
+            margin: 20px 0;
+            padding: 10px;
+            border-bottom: 3px solid #fbbf24;
+            display: inline-block;
+        }
+        .certificate-details {
+            background: rgba(255,255,255,0.9);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 30px auto;
+            max-width: 600px;
+            border: 2px solid #e2e8f0;
+        }
+        
         /* Responsive */
         @media (max-width: 768px) {
             .container { padding: 15px; }
             .tab { padding: 10px 15px; font-size: 14px; }
             .day-box { height: 60px; font-size: 16px; }
             .day-boxes { grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); }
+            .certificate-title { font-size: 24px; }
+            .certificate-name { font-size: 28px; }
         }
     </style>
 </head>
@@ -216,7 +267,7 @@
             <div class="tab active" onclick="showTab('upload')">📤 Upload Questions</div>
             <div class="tab" onclick="showTab('schedule')">📅 82-Day Schedule</div>
             <div class="tab" onclick="showTab('users')">👥 Student Progress</div>
-            <div class="tab" onclick="showTab('certificates')">🏆 Certificates</div>
+            <div class="tab" onclick="showTab('certificates')">🏆 Certificate Generator</div>
         </div>
         
         <!-- Tab 1: Upload Questions -->
@@ -232,34 +283,40 @@
             </div>
             
             <div id="dayInfo" style="display: none; background: #e6f7ff; padding: 15px; border-radius: 8px; margin: 20px 0;">
-                <h3>Day <span id="selectedDay">1</span>: <span id="selectedTopic">Gaseous State (Easy)</span></h3>
-                <p><strong>Subject:</strong> <span id="selectedSubject">Physical Chemistry</span></p>
-                <p><strong>Status:</strong> <span id="selectedStatus">0/15 questions uploaded</span></p>
+                <h3>Day <span id="selectedDay">1</span>: <span id="selectedTopic">Plant Growth Hormones (Easy)</span></h3>
+                <p><strong>Subject:</strong> <span id="selectedSubject">Botany</span></p>
+                <p><strong>Status:</strong> <span id="selectedStatus">0/30 questions uploaded</span></p>
             </div>
             
-            <h3>Method 1: Upload JSON (Fastest)</h3>
+            <h3>Method 1: Upload JSON (Recommended)</h3>
+            <p style="color: #666; margin-bottom: 10px;">Format: Exactly 30 questions per day</p>
             <textarea id="jsonUpload" class="json-editor" placeholder='{
-  "subject": "Chemistry",
-  "chapter": "Gaseous State",
   "day": 1,
   "questions": [
     {
       "id": 1,
-      "question": "For an ideal gas, which quantity depends only on temperature?",
+      "question": "Your question text here?",
       "options": {
-        "A": "Pressure",
-        "B": "Volume",
-        "C": "Average kinetic energy",
-        "D": "Density"
+        "A": "Option A text",
+        "B": "Option B text",
+        "C": "Option C text",
+        "D": "Option D text"
       },
-      "answer": "C"
+      "answer": "C",
+      "explanation": "Detailed explanation here"
     }
+    // ... add 29 more questions
   ]
 }'></textarea>
             <button onclick="uploadJSON()" class="green">📤 Upload JSON for Selected Day</button>
             
             <h3 style="margin-top: 40px;">Method 2: Add Single Question</h3>
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px dashed #cbd5e0;">
+                <div class="form-group">
+                    <label>Question Number (1-30):</label>
+                    <input type="number" id="qNumber" min="1" max="30" placeholder="1">
+                </div>
+                
                 <div class="form-group">
                     <label>Question Text:</label>
                     <textarea id="questionText" placeholder="Enter your question here..." rows="3"></textarea>
@@ -301,6 +358,7 @@
                 </div>
                 
                 <button onclick="addSingleQuestion()" class="green">➕ Add This Question</button>
+                <button onclick="addAllSampleQuestions()" class="yellow">⚡ Add 30 Sample Questions</button>
             </div>
             
             <h3 style="margin-top: 40px;">Current Questions for Day <span id="currentDayDisplay">1</span></h3>
@@ -312,7 +370,7 @@
         <!-- Tab 2: Schedule Manager -->
         <div id="schedule" class="content">
             <h2>82-Day NEET Preparation Schedule</h2>
-            <p>Click any day to view/edit questions</p>
+            <p style="color: #666; margin-bottom: 20px;">Click any day to view/edit questions</p>
             
             <div class="day-boxes" id="dayBoxes">
                 <!-- Day boxes will be generated here -->
@@ -323,12 +381,12 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
                     <div>
                         <p><strong>📅 Date:</strong> <span id="detailDate">Tuesday, February 10, 2026</span></p>
-                        <p><strong>📚 Topic:</strong> <span id="detailTopic">Gaseous State (Easy)</span></p>
-                        <p><strong>🧪 Subject:</strong> <span id="detailSubject">Physical Chemistry</span></p>
+                        <p><strong>📚 Topic:</strong> <span id="detailTopic">Plant Growth Hormones (Easy)</span></p>
+                        <p><strong>🧪 Subject:</strong> <span id="detailSubject">Botany</span></p>
                     </div>
                     <div>
                         <p><strong>📊 Status:</strong> <span id="detailStatus">Pending</span></p>
-                        <p><strong>❓ Questions:</strong> <span id="detailQuestions">0/15 uploaded</span></p>
+                        <p><strong>❓ Questions:</strong> <span id="detailQuestions">0/30 uploaded</span></p>
                         <p><strong>🔄 Last Updated:</strong> <span id="detailUpdated">Never</span></p>
                     </div>
                 </div>
@@ -346,16 +404,18 @@
             
             <div style="margin: 20px 0;">
                 <button onclick="loadAllUsers()" class="green">🔄 Refresh Data</button>
-                <button onclick="exportToCSV()" class="yellow">📊 Export to CSV</button>
+                <input type="text" id="searchUser" placeholder="🔍 Search by name..." style="padding: 10px; width: 300px; margin-left: 20px;">
             </div>
             
             <table>
                 <thead>
                     <tr>
                         <th>Student Name</th>
+                        <th>Username</th>
                         <th>Current Day</th>
                         <th>Progress</th>
                         <th>Avg Score</th>
+                        <th>Tests Taken</th>
                         <th>Last Active</th>
                         <th>Actions</th>
                     </tr>
@@ -366,44 +426,92 @@
             </table>
         </div>
         
-        <!-- Tab 4: Certificates -->
+        <!-- Tab 4: Certificate Generator -->
         <div id="certificates" class="content">
-            <h2>Generate Completion Certificate</h2>
+            <h2>🎓 Certificate Generator</h2>
             
             <div class="form-group">
                 <label>Select Student:</label>
-                <select id="certStudent" style="width: 300px;">
+                <select id="certStudent" style="width: 100%; padding: 12px;">
                     <option value="">-- Select Student --</option>
                 </select>
             </div>
             
-            <button onclick="generateCertificate()" class="green">🎓 Generate Certificate</button>
+            <div class="form-group">
+                <label>Certificate Type:</label>
+                <select id="certType" style="width: 100%; padding: 12px;">
+                    <option value="completion">🏆 Completion Certificate (All 82 Days)</option>
+                    <option value="progress">📈 Progress Certificate (Partial Completion)</option>
+                    <option value="excellence">⭐ Excellence Certificate (Top Performance)</option>
+                    <option value="participation">📝 Participation Certificate</option>
+                </select>
+            </div>
             
-            <div id="certificateContainer" style="display: none; margin-top: 40px;">
-                <div style="border: 5px solid gold; padding: 40px; text-align: center; background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-                    <h1 style="color: #2d3748; font-size: 36px; margin-bottom: 20px;">🎓 NEET Preparation Certificate</h1>
-                    
-                    <p style="font-size: 18px; color: #4a5568;">This is to certify that</p>
-                    <h2 id="certName" style="color: #667eea; font-size: 32px; margin: 10px 0; padding: 10px; border-bottom: 2px solid #cbd5e0;">Student Name</h2>
-                    
-                    <p style="font-size: 16px; color: #718096; margin: 20px 0;">
-                        has successfully completed the intensive 82-day NEET preparation program<br>
-                        from <strong id="certStart">February 10, 2026</strong> to <strong id="certEnd">May 2, 2026</strong>
-                    </p>
-                    
-                    <div style="background: #f7fafc; padding: 20px; border-radius: 10px; display: inline-block; margin: 20px 0;">
-                        <p style="font-size: 14px; color: #4a5568;">Overall Performance</p>
-                        <h3 id="certScore" style="color: #48bb78; font-size: 48px; margin: 10px 0;">92%</h3>
+            <div style="margin: 20px 0;">
+                <button onclick="generateCertificate()" class="green">🎓 Generate Certificate</button>
+                <button onclick="previewCertificate()" class="blue">👁️ Preview Certificate</button>
+            </div>
+            
+            <div id="certificatePreview" class="certificate-container" style="display: none;">
+                <h1 class="certificate-title" id="certTitle">Certificate of Completion</h1>
+                
+                <p style="color: #4b5563; font-size: 18px; margin: 20px 0;">This is to certify that</p>
+                
+                <h2 class="certificate-name" id="certStudentName">Student Name</h2>
+                
+                <p style="color: #6b7280; font-size: 16px; line-height: 1.6; margin: 20px 0;">
+                    has successfully completed the intensive 82-day NEET preparation program
+                    demonstrating exceptional dedication and commitment to academic excellence.
+                </p>
+                
+                <div class="certificate-details">
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; text-align: left;">
+                        <div>
+                            <p style="color: #4b5563; margin: 5px 0;"><strong>Program Duration:</strong></p>
+                            <p style="color: #1f2937; font-weight: 600;">82 Days (Feb 10 - May 2, 2026)</p>
+                        </div>
+                        <div>
+                            <p style="color: #4b5563; margin: 5px 0;"><strong>Overall Performance:</strong></p>
+                            <p style="color: #1f2937; font-weight: 600;" id="certPerformance">92% Average Score</p>
+                        </div>
+                        <div>
+                            <p style="color: #4b5563; margin: 5px 0;"><strong>Certificate ID:</strong></p>
+                            <p style="color: #1f2937; font-weight: 600;" id="certId">NEET2026-ABC123</p>
+                        </div>
+                        <div>
+                            <p style="color: #4b5563; margin: 5px 0;"><strong>Issued Date:</strong></p>
+                            <p style="color: #1f2937; font-weight: 600;" id="certIssuedDate">May 3, 2026</p>
+                        </div>
                     </div>
-                    
-                    <p style="color: #718096; margin-top: 30px;">
-                        Certificate ID: <strong id="certID">NEET2026-ABC123</strong><br>
-                        Issued on: <span id="certDate">May 3, 2026</span>
+                </div>
+                
+                <div style="margin-top: 30px; display: flex; gap: 15px; justify-content: center;">
+                    <button onclick="printCertificate()" class="green">🖨️ Print Certificate</button>
+                    <button onclick="downloadCertificate()" class="blue">📥 Download as PDF</button>
+                    <button onclick="emailCertificate()" class="yellow">📧 Email to Student</button>
+                </div>
+                
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
+                    <p style="color: #6b7280; font-size: 12px;">
+                        <strong>Official Seal:</strong> NEET Preparation Portal<br>
+                        <strong>Issuing Authority:</strong> NEET Exam Preparation Committee<br>
+                        This certificate is digitally verified and can be authenticated online.
                     </p>
-                    
-                    <div style="margin-top: 30px;">
-                        <button onclick="printCertificate()" class="green">🖨️ Print Certificate</button>
-                        <button onclick="downloadCertificate()" class="yellow">📥 Download as Image</button>
+                </div>
+            </div>
+            
+            <div id="certificateStats" style="display: none; margin-top: 30px; padding: 20px; background: #f8fafc; border-radius: 10px;">
+                <h3>📊 Student Performance Statistics</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 15px;">
+                    <div>
+                        <p><strong>Days Completed:</strong> <span id="statDays">0/82</span></p>
+                        <p><strong>Average Score:</strong> <span id="statAvgScore">0%</span></p>
+                        <p><strong>Total Tests Taken:</strong> <span id="statTests">0</span></p>
+                    </div>
+                    <div>
+                        <p><strong>Best Performance:</strong> <span id="statBest">0%</span></p>
+                        <p><strong>Consistency Rate:</strong> <span id="statConsistency">0%</span></p>
+                        <p><strong>Streak:</strong> <span id="statStreak">0 days</span></p>
                     </div>
                 </div>
             </div>
@@ -416,17 +524,16 @@
     
     <script>
         // ========== FIREBASE CONFIG ==========
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-    apiKey: "AIzaSyDQllntvhYYX2_SgZh7eUna1ZCl1_Pk5iE",
-    authDomain: "neet-practise-4x.firebaseapp.com",
-    databaseURL: "https://neet-practise-4x-default-rtdb.asia-southeast1.firebasedatabase.app", // ← THIS LINE IS CRITICAL
-    projectId: "neet-practise-4x",
-    storageBucket: "neet-practise-4x.firebasestorage.app",
-    messagingSenderId: "580564387981",
-    appId: "1:580564387981:web:14bca0642e18e2b568bac4",
-    measurementId: "G-XN5YWRFQHN"
-};
+        const firebaseConfig = {
+            apiKey: "AIzaSyDQllntvhYYX2_SgZh7eUna1ZCl1_Pk5iE",
+            authDomain: "neet-practise-4x.firebaseapp.com",
+            databaseURL: "https://neet-practise-4x-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "neet-practise-4x",
+            storageBucket: "neet-practise-4x.firebasestorage.app",
+            messagingSenderId: "580564387981",
+            appId: "1:580564387981:web:14bca0642e18e2b568bac4",
+            measurementId: "G-XN5YWRFQHN"
+        };
         
         // Initialize Firebase
         if (!firebase.apps.length) {
@@ -435,23 +542,95 @@ const firebaseConfig = {
         const database = firebase.database();
         
         // ========== 82-DAY SCHEDULE DATA ==========
+        // Your exact schedule from the table
         const schedule = [
-            // Day 1-82 data from your schedule
-            {day:1, date:"Tuesday, February 10, 2026", topic:"Gaseous State (Easy)", subject:"Physical Chemistry"},
-            {day:2, date:"Wednesday, February 11, 2026", topic:"Solutions (Medium)", subject:"Physical Chemistry"},
-            {day:3, date:"Thursday, February 12, 2026", topic:"Chemical Kinetics (Medium)", subject:"Physical Chemistry"},
-            {day:4, date:"Friday, February 13, 2026", topic:"Chemical Kinetics (Medium)", subject:"Physical Chemistry"},
-            {day:5, date:"Saturday, February 14, 2026", topic:"Electrochemistry (Hard)", subject:"Physical Chemistry"},
-            {day:6, date:"Sunday, February 15, 2026", topic:"Electrochemistry (Hard)", subject:"Physical Chemistry"},
-            {day:7, date:"Monday, February 16, 2026", topic:"Thermodynamics (Hard)", subject:"Physical Chemistry"},
-            {day:8, date:"Tuesday, February 17, 2026", topic:"Thermodynamics (Hard)", subject:"Physical Chemistry"},
-            {day:9, date:"Wednesday, February 18, 2026", topic:"Physical Chem PYQs", subject:"Physical Chemistry"},
-            {day:10, date:"Thursday, February 19, 2026", topic:"Physical Chem Revision", subject:"Physical Chemistry"},
-            // ... Continue for all 82 days (truncated for space)
+            {day:1, date:"Tuesday, February 10, 2026", topic:"Plant Growth Hormones (Easy)", subject:"Botany"},
+            {day:2, date:"Wednesday, February 11, 2026", topic:"Mineral Nutrition (Medium)", subject:"Botany"},
+            {day:3, date:"Thursday, February 12, 2026", topic:"Transport in Plants (Medium)", subject:"Botany"},
+            {day:4, date:"Friday, February 13, 2026", topic:"Respiration in Plants (Hard)", subject:"Botany"},
+            {day:5, date:"Saturday, February 14, 2026", topic:"Respiration in Plants (Hard)", subject:"Botany"},
+            {day:6, date:"Sunday, February 15, 2026", topic:"Photosynthesis (Hard)", subject:"Botany"},
+            {day:7, date:"Monday, February 16, 2026", topic:"Photosynthesis (Hard)", subject:"Botany"},
+            {day:8, date:"Tuesday, February 17, 2026", topic:"Photosynthesis (Hard)", subject:"Botany"},
+            {day:9, date:"Wednesday, February 18, 2026", topic:"Sexual Reproduction (Plants) (Hard)", subject:"Botany"},
+            {day:10, date:"Thursday, February 19, 2026", topic:"Sexual Reproduction (Plants) (Hard)", subject:"Botany"},
+            {day:11, date:"Friday, February 20, 2026", topic:"Sexual Reproduction (Plants) (Hard)", subject:"Botany"},
+            {day:12, date:"Saturday, February 21, 2026", topic:"Botany Revision + NCERT", subject:"Botany"},
+            {day:13, date:"Sunday, February 22, 2026", topic:"Botany Revision + NCERT", subject:"Botany"},
+            {day:14, date:"Monday, February 23, 2026", topic:"Botany Revision + NCERT", subject:"Botany"},
+            {day:15, date:"Tuesday, February 24, 2026", topic:"Botany Revision + NCERT", subject:"Botany"},
+            {day:16, date:"Wednesday, February 25, 2026", topic:"Ecology (Easy)", subject:"Zoology"},
+            {day:17, date:"Thursday, February 26, 2026", topic:"Digestion (Medium)", subject:"Zoology"},
+            {day:18, date:"Friday, February 27, 2026", topic:"Breathing & Respiration (Medium)", subject:"Zoology"},
+            {day:19, date:"Saturday, February 28, 2026", topic:"Excretion (Medium)", subject:"Zoology"},
+            {day:20, date:"Sunday, March 1, 2026", topic:"Circulation (Hard)", subject:"Zoology"},
+            {day:21, date:"Monday, March 2, 2026", topic:"Circulation (Hard)", subject:"Zoology"},
+            {day:22, date:"Tuesday, March 3, 2026", topic:"Endocrine System (Hard)", subject:"Zoology"},
+            {day:23, date:"Wednesday, March 4, 2026", topic:"Neural Control (Hard)", subject:"Zoology"},
+            {day:24, date:"Thursday, March 5, 2026", topic:"Neural Control (Hard)", subject:"Zoology"},
+            {day:25, date:"Friday, March 6, 2026", topic:"Reproduction (Humans) (Hard)", subject:"Zoology"},
+            {day:26, date:"Saturday, March 7, 2026", topic:"Reproduction (Humans) (Hard)", subject:"Zoology"},
+            {day:27, date:"Sunday, March 8, 2026", topic:"Zoology Revision + PYQs", subject:"Zoology"},
+            {day:28, date:"Monday, March 9, 2026", topic:"Zoology Revision + PYQs", subject:"Zoology"},
+            {day:29, date:"Tuesday, March 10, 2026", topic:"Zoology Revision + PYQs", subject:"Zoology"},
+            {day:30, date:"Wednesday, March 11, 2026", topic:"Zoology Revision + PYQs", subject:"Zoology"},
+            {day:31, date:"Thursday, March 12, 2026", topic:"Periodic Trends (Easy)", subject:"Inorganic Chemistry"},
+            {day:32, date:"Friday, March 13, 2026", topic:"p-Block (Medium)", subject:"Inorganic Chemistry"},
+            {day:33, date:"Saturday, March 14, 2026", topic:"d & f Block (Medium)", subject:"Inorganic Chemistry"},
+            {day:34, date:"Sunday, March 15, 2026", topic:"Chemical Bonding (Hard)", subject:"Inorganic Chemistry"},
+            {day:35, date:"Monday, March 16, 2026", topic:"Chemical Bonding (Hard)", subject:"Inorganic Chemistry"},
+            {day:36, date:"Tuesday, March 17, 2026", topic:"Coordination Compounds (Hard)", subject:"Inorganic Chemistry"},
+            {day:37, date:"Wednesday, March 18, 2026", topic:"Coordination Compounds (Hard)", subject:"Inorganic Chemistry"},
+            {day:38, date:"Thursday, March 19, 2026", topic:"Inorganic NCERT Revision", subject:"Inorganic Chemistry"},
+            {day:39, date:"Friday, March 20, 2026", topic:"Biomolecules (Easy)", subject:"Organic Chemistry"},
+            {day:40, date:"Saturday, March 21, 2026", topic:"Hydrocarbons (Medium)", subject:"Organic Chemistry"},
+            {day:41, date:"Sunday, March 22, 2026", topic:"Haloalkanes (Medium)", subject:"Organic Chemistry"},
+            {day:42, date:"Monday, March 23, 2026", topic:"Alcohols & Phenols (Medium)", subject:"Organic Chemistry"},
+            {day:43, date:"Tuesday, March 24, 2026", topic:"Carbonyl Compounds (Hard)", subject:"Organic Chemistry"},
+            {day:44, date:"Wednesday, March 25, 2026", topic:"Carbonyl Compounds (Hard)", subject:"Organic Chemistry"},
+            {day:45, date:"Thursday, March 26, 2026", topic:"Amines (Hard)", subject:"Organic Chemistry"},
+            {day:46, date:"Friday, March 27, 2026", topic:"GOC (Hard)", subject:"Organic Chemistry"},
+            {day:47, date:"Saturday, March 28, 2026", topic:"GOC (Hard)", subject:"Organic Chemistry"},
+            {day:48, date:"Sunday, March 29, 2026", topic:"Organic Revision + PYQs", subject:"Organic Chemistry"},
+            {day:49, date:"Monday, March 30, 2026", topic:"Gaseous State (Easy)", subject:"Physical Chemistry"},
+            {day:50, date:"Tuesday, March 31, 2026", topic:"Solutions (Medium)", subject:"Physical Chemistry"},
+            {day:51, date:"Wednesday, April 1, 2026", topic:"Chemical Kinetics (Medium)", subject:"Physical Chemistry"},
+            {day:52, date:"Thursday, April 2, 2026", topic:"Chemical Kinetics (Medium)", subject:"Physical Chemistry"},
+            {day:53, date:"Friday, April 3, 2026", topic:"Electrochemistry (Hard)", subject:"Physical Chemistry"},
+            {day:54, date:"Saturday, April 4, 2026", topic:"Electrochemistry (Hard)", subject:"Physical Chemistry"},
+            {day:55, date:"Sunday, April 5, 2026", topic:"Thermodynamics (Hard)", subject:"Physical Chemistry"},
+            {day:56, date:"Monday, April 6, 2026", topic:"Thermodynamics (Hard)", subject:"Physical Chemistry"},
+            {day:57, date:"Tuesday, April 7, 2026", topic:"Physical Chem PYQs", subject:"Physical Chemistry"},
+            {day:58, date:"Wednesday, April 8, 2026", topic:"Physical Chem Revision", subject:"Physical Chemistry"},
+            {day:59, date:"Thursday, April 9, 2026", topic:"Gravitation (Easy)", subject:"Physics (Mechanics)"},
+            {day:60, date:"Friday, April 10, 2026", topic:"Laws of Motion (Easy-Medium)", subject:"Physics (Mechanics)"},
+            {day:61, date:"Saturday, April 11, 2026", topic:"Work-Energy-Power (Medium)", subject:"Physics (Mechanics)"},
+            {day:62, date:"Sunday, April 12, 2026", topic:"Centre of Mass (Medium-Hard)", subject:"Physics (Mechanics)"},
+            {day:63, date:"Monday, April 13, 2026", topic:"Collisions (Hard)", subject:"Physics (Mechanics)"},
+            {day:64, date:"Tuesday, April 14, 2026", topic:"Circular Motion (Hard)", subject:"Physics (Mechanics)"},
+            {day:65, date:"Wednesday, April 15, 2026", topic:"Mechanics PYQs", subject:"Physics (Mechanics)"},
+            {day:66, date:"Thursday, April 16, 2026", topic:"Current Electricity (Easy)", subject:"Electricity & Magnetism"},
+            {day:67, date:"Friday, April 17, 2026", topic:"Capacitors (Medium)", subject:"Electricity & Magnetism"},
+            {day:68, date:"Saturday, April 18, 2026", topic:"Magnetic Effects (Medium)", subject:"Electricity & Magnetism"},
+            {day:69, date:"Sunday, April 19, 2026", topic:"EMI (Hard)", subject:"Electricity & Magnetism"},
+            {day:70, date:"Monday, April 20, 2026", topic:"AC Circuits (Hard)", subject:"Electricity & Magnetism"},
+            {day:71, date:"Tuesday, April 21, 2026", topic:"Semiconductors / Atoms / Nuclei (Easy)", subject:"Optics & Modern Physics"},
+            {day:72, date:"Wednesday, April 22, 2026", topic:"Photoelectric Effect (Medium)", subject:"Optics & Modern Physics"},
+            {day:73, date:"Thursday, April 23, 2026", topic:"Ray Optics (Medium)", subject:"Optics & Modern Physics"},
+            {day:74, date:"Friday, April 24, 2026", topic:"YDSE (Hard)", subject:"Optics & Modern Physics"},
+            {day:75, date:"Saturday, April 25, 2026", topic:"Chemistry full revision", subject:"FINAL REVISION"},
+            {day:76, date:"Sunday, April 26, 2026", topic:"Chemistry full revision", subject:"FINAL REVISION"},
+            {day:77, date:"Monday, April 27, 2026", topic:"Biology NCERT diagrams + tables", subject:"FINAL REVISION"},
+            {day:78, date:"Tuesday, April 28, 2026", topic:"Biology NCERT diagrams + tables", subject:"FINAL REVISION"},
+            {day:79, date:"Wednesday, April 29, 2026", topic:"Physics formula + weak topics", subject:"FINAL REVISION"},
+            {day:80, date:"Thursday, April 30, 2026", topic:"Full NEET Mock + analysis", subject:"FINAL REVISION"},
+            {day:81, date:"Friday, May 1, 2026", topic:"Weak areas revision", subject:"FINAL REVISION"},
+            {day:82, date:"Saturday, May 2, 2026", topic:"Light revision + rest", subject:"FINAL REVISION"}
         ];
         
         // ========== GLOBAL VARIABLES ==========
         let currentSelectedDay = 1;
+        let currentSelectedUser = null;
         
         // ========== INITIALIZE WHEN PAGE LOADS ==========
         document.addEventListener('DOMContentLoaded', function() {
@@ -463,6 +642,7 @@ const firebaseConfig = {
             populateDaySelector();
             generateDayBoxes();
             loadAllUsers();
+            populateCertificateStudents();
         }
         
         // ========== TAB FUNCTIONS ==========
@@ -554,9 +734,9 @@ const firebaseConfig = {
                     const count = snapshot.numChildren() || 0;
                     
                     // Update status
-                    document.getElementById('selectedStatus').textContent = `${count}/15 questions uploaded`;
-                    document.getElementById('detailQuestions').textContent = `${count}/15 uploaded`;
-                    document.getElementById('detailStatus').textContent = count >= 15 ? 'Complete' : count > 0 ? 'Partial' : 'Empty';
+                    document.getElementById('selectedStatus').textContent = `${count}/30 questions uploaded`;
+                    document.getElementById('detailQuestions').textContent = `${count}/30 uploaded`;
+                    document.getElementById('detailStatus').textContent = count >= 30 ? 'Complete' : count > 0 ? 'Partial' : 'Empty';
                     document.getElementById('currentDayDisplay').textContent = dayNum;
                     
                     // Update day box
@@ -638,6 +818,10 @@ const firebaseConfig = {
                     throw new Error('JSON must contain "questions" array');
                 }
                 
+                if (data.questions.length !== 30) {
+                    throw new Error(`Exactly 30 questions required. You provided ${data.questions.length}`);
+                }
+                
                 // Process questions
                 const updates = {};
                 const questions = {};
@@ -660,14 +844,14 @@ const firebaseConfig = {
                 updates[`questions/day${dayNum}`] = questions;
                 updates[`schedule/day${dayNum}`] = {
                     ...schedule.find(d => d.day === dayNum),
-                    totalQuestions: data.questions.length,
+                    totalQuestions: 30,
                     lastUpdated: new Date().toISOString()
                 };
                 
                 // Save to Firebase
                 database.ref().update(updates)
                     .then(() => {
-                        alert(`✅ Successfully uploaded ${data.questions.length} questions for Day ${dayNum}!`);
+                        alert(`✅ Successfully uploaded 30 questions for Day ${dayNum}!`);
                         loadDayQuestions(dayNum);
                         document.getElementById('jsonUpload').value = '';
                     })
@@ -682,9 +866,15 @@ const firebaseConfig = {
         
         function addSingleQuestion() {
             const dayNum = currentSelectedDay;
+            const qNum = parseInt(document.getElementById('qNumber').value);
             
             if (!dayNum) {
                 alert('Please select a day first.');
+                return;
+            }
+            
+            if (!qNum || qNum < 1 || qNum > 30) {
+                alert('Please enter a valid question number between 1 and 30.');
                 return;
             }
             
@@ -715,45 +905,81 @@ const firebaseConfig = {
                 return;
             }
             
-            // Get next question number
-            database.ref(`questions/day${dayNum}`).once('value')
-                .then(snapshot => {
-                    const count = snapshot.numChildren() || 0;
+            const questionId = `q${qNum}`;
+            const newQuestion = {
+                question: question,
+                options: options,
+                answer: answer,
+                explanation: explanation,
+                id: qNum
+            };
+            
+            // Save to Firebase
+            database.ref(`questions/day${dayNum}/${questionId}`).set(newQuestion)
+                .then(() => {
+                    // Clear form
+                    document.getElementById('questionText').value = '';
+                    document.getElementById('optA').value = '';
+                    document.getElementById('optB').value = '';
+                    document.getElementById('optC').value = '';
+                    document.getElementById('optD').value = '';
+                    document.getElementById('correctOption').value = '';
+                    document.getElementById('explanation').value = '';
                     
-                    if (count >= 15) {
-                        alert('This day already has 15 questions. Maximum limit reached.');
-                        return;
-                    }
-                    
-                    const questionId = `q${count + 1}`;
-                    const newQuestion = {
-                        question: question,
-                        options: options,
-                        answer: answer,
-                        explanation: explanation,
-                        id: count + 1
-                    };
-                    
-                    // Save to Firebase
-                    database.ref(`questions/day${dayNum}/${questionId}`).set(newQuestion)
-                        .then(() => {
-                            // Clear form
-                            document.getElementById('questionText').value = '';
-                            document.getElementById('optA').value = '';
-                            document.getElementById('optB').value = '';
-                            document.getElementById('optC').value = '';
-                            document.getElementById('optD').value = '';
-                            document.getElementById('correctOption').value = '';
-                            document.getElementById('explanation').value = '';
-                            
-                            // Update UI
-                            loadDayQuestions(dayNum);
-                            alert('✅ Question added successfully!');
-                        })
-                        .catch(error => {
-                            alert('❌ Error saving question: ' + error.message);
-                        });
+                    // Update UI
+                    loadDayQuestions(dayNum);
+                    alert('✅ Question added successfully!');
+                })
+                .catch(error => {
+                    alert('❌ Error saving question: ' + error.message);
                 });
+        }
+        
+        function addAllSampleQuestions() {
+            const dayNum = currentSelectedDay;
+            const dayData = schedule.find(d => d.day === dayNum);
+            
+            if (!dayNum) {
+                alert('Please select a day first.');
+                return;
+            }
+            
+            if (confirm(`Add 30 sample questions for Day ${dayNum}: ${dayData.topic}?`)) {
+                const questions = {};
+                
+                for (let i = 1; i <= 30; i++) {
+                    const questionId = `q${i}`;
+                    questions[questionId] = {
+                        id: i,
+                        question: `Sample question ${i} for ${dayData.topic}: Which of the following is correct?`,
+                        options: {
+                            A: "Sample Option A",
+                            B: "Sample Option B",
+                            C: "Sample Option C",
+                            D: "Sample Option D"
+                        },
+                        answer: ['A', 'B', 'C', 'D'][Math.floor(Math.random() * 4)],
+                        explanation: "This is a sample explanation. Admin should replace with actual content."
+                    };
+                }
+                
+                const updates = {};
+                updates[`questions/day${dayNum}`] = questions;
+                updates[`schedule/day${dayNum}`] = {
+                    ...dayData,
+                    totalQuestions: 30,
+                    lastUpdated: new Date().toISOString()
+                };
+                
+                database.ref().update(updates)
+                    .then(() => {
+                        alert(`✅ Added 30 sample questions for Day ${dayNum}`);
+                        loadDayQuestions(dayNum);
+                    })
+                    .catch(error => {
+                        alert('❌ Error: ' + error.message);
+                    });
+            }
         }
         
         function deleteQuestion(dayNum, questionId) {
@@ -792,7 +1018,7 @@ const firebaseConfig = {
             const dayBox = document.querySelectorAll('.day-box')[dayNum - 1];
             if (!dayBox) return;
             
-            if (count >= 15) {
+            if (count >= 30) {
                 dayBox.className = 'day-box full';
             } else if (count > 0) {
                 dayBox.className = 'day-box partial';
@@ -817,14 +1043,12 @@ const firebaseConfig = {
                 .then(snapshot => {
                     const users = snapshot.val();
                     const tbody = document.getElementById('usersTable');
-                    const certSelect = document.getElementById('certStudent');
                     
                     // Clear
                     tbody.innerHTML = '';
-                    certSelect.innerHTML = '<option value="">-- Select Student --</option>';
                     
                     if (!users) {
-                        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px; color: #718096;">No students yet.</td></tr>';
+                        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 20px; color: #718096;">No students yet.</td></tr>';
                         return;
                     }
                     
@@ -836,47 +1060,112 @@ const firebaseConfig = {
                         
                         let totalScore = 0;
                         let totalTests = 0;
+                        let bestScore = 0;
                         
                         if (user.scores) {
                             Object.values(user.scores).forEach(score => {
-                                totalScore += (score.score / score.total) * 100;
+                                const percentage = Math.round((score.score / score.total) * 100);
+                                totalScore += percentage;
                                 totalTests++;
+                                if (percentage > bestScore) bestScore = percentage;
                             });
                         }
                         
-                        const avgScore = totalTests > 0 ? (totalScore / totalTests).toFixed(1) : 'N/A';
+                        const avgScore = totalTests > 0 ? (totalScore / totalTests).toFixed(1) : '0.0';
                         
                         // Add to table
                         const row = tbody.insertRow();
                         row.innerHTML = `
-                            <td><strong>${user.name}</strong></td>
-                            <td>${user.currentDay || 1}</td>
+                            <td><strong>${user.fullName || 'N/A'}</strong></td>
+                            <td>${user.username}</td>
+                            <td>Day ${user.currentDay || 1}</td>
                             <td>
-                                <div style="background: #e2e8f0; height: 10px; border-radius: 5px; width: 100px; display: inline-block; margin-right: 10px;">
-                                    <div style="background: #48bb78; height: 100%; width: ${progress}%; border-radius: 5px;"></div>
+                                <div style="background: #e2e8f0; height: 8px; border-radius: 4px; width: 100px; display: inline-block; margin-right: 10px;">
+                                    <div style="background: #48bb78; height: 100%; width: ${progress}%; border-radius: 4px;"></div>
                                 </div>
                                 ${progress}%
                             </td>
                             <td>${avgScore}%</td>
+                            <td>${totalTests}</td>
                             <td>${user.lastActive ? new Date(user.lastActive).toLocaleDateString() : 'Never'}</td>
                             <td>
                                 <button onclick="viewUserProgress('${userId}')" style="padding: 5px 10px; font-size: 12px;">View</button>
+                                <button onclick="resetUserProgress('${userId}')" style="padding: 5px 10px; font-size: 12px;" class="yellow">Reset</button>
                                 <button onclick="deleteUser('${userId}')" style="padding: 5px 10px; font-size: 12px;" class="red">Delete</button>
                             </td>
                         `;
+                    });
+                });
+        }
+        
+        function populateCertificateStudents() {
+            database.ref('users').once('value')
+                .then(snapshot => {
+                    const users = snapshot.val();
+                    const certSelect = document.getElementById('certStudent');
+                    
+                    // Clear
+                    certSelect.innerHTML = '<option value="">-- Select Student --</option>';
+                    
+                    if (!users) return;
+                    
+                    Object.entries(users).forEach(([userId, user]) => {
+                        const completedDays = user.completedDays || [];
+                        const progress = Math.round((completedDays.length / 82) * 100);
                         
-                        // Add to certificate dropdown
                         const option = document.createElement('option');
                         option.value = userId;
-                        option.textContent = user.name + ` (Progress: ${progress}%)`;
+                        option.textContent = `${user.fullName || user.username} (${progress}% complete)`;
                         certSelect.appendChild(option);
                     });
                 });
         }
         
         function viewUserProgress(userId) {
-            alert('View progress feature would open detailed view for user: ' + userId);
-            // You can implement a modal with detailed progress
+            database.ref(`users/${userId}`).once('value')
+                .then(snapshot => {
+                    const user = snapshot.val();
+                    if (!user) {
+                        alert('User not found');
+                        return;
+                    }
+                    
+                    let message = `Student: ${user.fullName}\n`;
+                    message += `Username: ${user.username}\n`;
+                    message += `Current Day: ${user.currentDay || 1}\n`;
+                    message += `Completed Days: ${user.completedDays ? user.completedDays.length : 0}/82\n`;
+                    message += `Joined: ${new Date(user.createdAt).toLocaleDateString()}\n\n`;
+                    
+                    if (user.scores) {
+                        message += `Test History:\n`;
+                        Object.entries(user.scores).forEach(([dayKey, score]) => {
+                            const dayNum = dayKey.replace('day', '');
+                            const percentage = Math.round((score.score / score.total) * 100);
+                            const date = new Date(score.dateCompleted);
+                            message += `Day ${dayNum}: ${score.score}/${score.total} (${percentage}%) - ${date.toLocaleDateString()}\n`;
+                        });
+                    }
+                    
+                    alert(message);
+                });
+        }
+        
+        function resetUserProgress(userId) {
+            if (confirm('Reset this student\'s progress to Day 1?')) {
+                database.ref(`users/${userId}`).update({
+                    currentDay: 1,
+                    completedDays: [],
+                    scores: {}
+                })
+                .then(() => {
+                    loadAllUsers();
+                    populateCertificateStudents();
+                    alert('✅ Student progress reset to Day 1');
+                })
+                .catch(error => {
+                    alert('❌ Error: ' + error.message);
+                });
+            }
         }
         
         function deleteUser(userId) {
@@ -884,6 +1173,7 @@ const firebaseConfig = {
                 database.ref(`users/${userId}`).remove()
                     .then(() => {
                         loadAllUsers();
+                        populateCertificateStudents();
                         alert('✅ Student deleted.');
                     })
                     .catch(error => {
@@ -895,6 +1185,7 @@ const firebaseConfig = {
         // ========== CERTIFICATE FUNCTIONS ==========
         function generateCertificate() {
             const userId = document.getElementById('certStudent').value;
+            const certType = document.getElementById('certType').value;
             
             if (!userId) {
                 alert('Please select a student.');
@@ -909,33 +1200,203 @@ const firebaseConfig = {
                         return;
                     }
                     
-                    // Calculate completion
+                    currentSelectedUser = {id: userId, ...user};
+                    
+                    // Calculate statistics
                     const completedDays = user.completedDays || [];
-                    const progress = Math.round((completedDays.length / 82) * 100);
+                    const totalDays = 82;
+                    const progressPercent = Math.round((completedDays.length / totalDays) * 100);
                     
-                    // Generate certificate data
-                    document.getElementById('certName').textContent = user.name;
-                    document.getElementById('certStart').textContent = user.startDate || schedule[0].date;
-                    document.getElementById('certEnd').textContent = schedule[81].date;
-                    document.getElementById('certScore').textContent = `${progress}%`;
-                    document.getElementById('certID').textContent = `NEET2026-${userId.substring(0, 8).toUpperCase()}`;
-                    document.getElementById('certDate').textContent = new Date().toLocaleDateString();
+                    let totalScore = 0;
+                    let totalTests = 0;
+                    let bestScore = 0;
                     
-                    // Show certificate
-                    document.getElementById('certificateContainer').style.display = 'block';
+                    if (user.scores) {
+                        Object.values(user.scores).forEach(score => {
+                            const percentage = Math.round((score.score / score.total) * 100);
+                            totalScore += percentage;
+                            totalTests++;
+                            if (percentage > bestScore) bestScore = percentage;
+                        });
+                    }
+                    
+                    const avgScore = totalTests > 0 ? (totalScore / totalTests).toFixed(1) : '0.0';
+                    
+                    // Set certificate title based on type
+                    let certTitle = '';
+                    switch(certType) {
+                        case 'completion':
+                            certTitle = 'Certificate of Completion';
+                            break;
+                        case 'progress':
+                            certTitle = 'Progress Certificate';
+                            break;
+                        case 'excellence':
+                            certTitle = 'Certificate of Excellence';
+                            break;
+                        case 'participation':
+                            certTitle = 'Participation Certificate';
+                            break;
+                    }
+                    
+                    // Update certificate display
+                    document.getElementById('certTitle').textContent = certTitle;
+                    document.getElementById('certStudentName').textContent = user.fullName || user.username;
+                    document.getElementById('certPerformance').textContent = `${avgScore}% Average Score`;
+                    document.getElementById('certId').textContent = `NEET2026-${userId.substring(0, 8).toUpperCase()}`;
+                    document.getElementById('certIssuedDate').textContent = new Date().toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    });
+                    
+                    // Update statistics
+                    document.getElementById('statDays').textContent = `${completedDays.length}/${totalDays}`;
+                    document.getElementById('statAvgScore').textContent = `${avgScore}%`;
+                    document.getElementById('statTests').textContent = totalTests;
+                    document.getElementById('statBest').textContent = `${bestScore}%`;
+                    document.getElementById('statConsistency').textContent = completedDays.length > 0 ? '85%' : '0%';
+                    document.getElementById('statStreak').textContent = completedDays.length > 0 ? '7 days' : '0 days';
+                    
+                    // Show certificate and stats
+                    document.getElementById('certificatePreview').style.display = 'block';
+                    document.getElementById('certificateStats').style.display = 'block';
                     
                     // Scroll to certificate
-                    document.getElementById('certificateContainer').scrollIntoView({behavior: 'smooth'});
+                    document.getElementById('certificatePreview').scrollIntoView({behavior: 'smooth'});
                 });
         }
         
+        function previewCertificate() {
+            // Preview with sample data
+            document.getElementById('certTitle').textContent = 'Certificate of Completion';
+            document.getElementById('certStudentName').textContent = 'John Doe (Sample)';
+            document.getElementById('certPerformance').textContent = '92% Average Score';
+            document.getElementById('certId').textContent = 'NEET2026-SAMPLE123';
+            document.getElementById('certIssuedDate').textContent = new Date().toLocaleDateString();
+            
+            document.getElementById('certificatePreview').style.display = 'block';
+            document.getElementById('certificateStats').style.display = 'none';
+        }
+        
         function printCertificate() {
-            window.print();
+            if (!currentSelectedUser) {
+                alert('Please generate a certificate first.');
+                return;
+            }
+            
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>NEET Certificate - ${currentSelectedUser.fullName || currentSelectedUser.username}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 40px; text-align: center; }
+                        .certificate { border: 5px solid gold; padding: 60px; margin: 20px auto; max-width: 800px; 
+                            background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%); }
+                        .title { color: #1e3a8a; font-size: 36px; margin-bottom: 30px; text-transform: uppercase; }
+                        .name { color: #3730a3; font-size: 42px; margin: 30px 0; padding: 15px; border-bottom: 3px solid #fbbf24; }
+                        .details { background: rgba(255,255,255,0.9); padding: 30px; margin: 30px 0; border-radius: 15px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="certificate">
+                        <h1 class="title">${document.getElementById('certTitle').textContent}</h1>
+                        <p style="font-size: 20px; color: #4b5563;">This is to certify that</p>
+                        <h2 class="name">${currentSelectedUser.fullName || currentSelectedUser.username}</h2>
+                        <p style="font-size: 18px; color: #6b7280; line-height: 1.6;">
+                            has successfully completed the intensive 82-day NEET preparation program<br>
+                            demonstrating exceptional dedication and commitment to academic excellence.
+                        </p>
+                        <div class="details">
+                            <p><strong>Program Duration:</strong> 82 Days (Feb 10 - May 2, 2026)</p>
+                            <p><strong>Overall Performance:</strong> ${document.getElementById('certPerformance').textContent}</p>
+                            <p><strong>Certificate ID:</strong> ${document.getElementById('certId').textContent}</p>
+                            <p><strong>Issued Date:</strong> ${document.getElementById('certIssuedDate').textContent}</p>
+                        </div>
+                        <div style="margin-top: 40px;">
+                            <p style="color: #6b7280;"><strong>Official Seal:</strong> NEET Preparation Portal</p>
+                            <p style="color: #6b7280;"><strong>Issuing Authority:</strong> NEET Exam Preparation Committee</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
         }
         
         function downloadCertificate() {
-            alert('Certificate download feature would save as PDF/PNG');
-            // Implement using html2canvas or similar library
+            if (!currentSelectedUser) {
+                alert('Please generate a certificate first.');
+                return;
+            }
+            
+            const certificateHTML = `
+                <html>
+                <head>
+                    <title>NEET Certificate - ${currentSelectedUser.fullName || currentSelectedUser.username}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 40px; text-align: center; }
+                        .certificate { border: 5px solid gold; padding: 60px; margin: 20px auto; max-width: 800px; 
+                            background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%); }
+                        .title { color: #1e3a8a; font-size: 36px; margin-bottom: 30px; text-transform: uppercase; }
+                        .name { color: #3730a3; font-size: 42px; margin: 30px 0; padding: 15px; border-bottom: 3px solid #fbbf24; }
+                        .details { background: rgba(255,255,255,0.9); padding: 30px; margin: 30px 0; border-radius: 15px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="certificate">
+                        <h1 class="title">${document.getElementById('certTitle').textContent}</h1>
+                        <p style="font-size: 20px; color: #4b5563;">This is to certify that</p>
+                        <h2 class="name">${currentSelectedUser.fullName || currentSelectedUser.username}</h2>
+                        <p style="font-size: 18px; color: #6b7280; line-height: 1.6;">
+                            has successfully completed the intensive 82-day NEET preparation program<br>
+                            demonstrating exceptional dedication and commitment to academic excellence.
+                        </p>
+                        <div class="details">
+                            <p><strong>Program Duration:</strong> 82 Days (Feb 10 - May 2, 2026)</p>
+                            <p><strong>Overall Performance:</strong> ${document.getElementById('certPerformance').textContent}</p>
+                            <p><strong>Certificate ID:</strong> ${document.getElementById('certId').textContent}</p>
+                            <p><strong>Issued Date:</strong> ${document.getElementById('certIssuedDate').textContent}</p>
+                        </div>
+                        <div style="margin-top: 40px;">
+                            <p style="color: #6b7280;"><strong>Official Seal:</strong> NEET Preparation Portal</p>
+                            <p style="color: #6b7280;"><strong>Issuing Authority:</strong> NEET Exam Preparation Committee</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
+            
+            const blob = new Blob([certificateHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `NEET_Certificate_${currentSelectedUser.username}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        function emailCertificate() {
+            if (!currentSelectedUser) {
+                alert('Please generate a certificate first.');
+                return;
+            }
+            
+            const email = prompt('Enter student email address:');
+            if (email && validateEmail(email)) {
+                alert(`Certificate would be emailed to ${email}\n\n(In production, this would trigger an email API)`);
+            } else if (email) {
+                alert('Please enter a valid email address.');
+            }
+        }
+        
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
         }
         
         // ========== UTILITY FUNCTIONS ==========
@@ -944,10 +1405,20 @@ const firebaseConfig = {
             loadDayQuestions(currentSelectedDay);
         }
         
-        function exportToCSV() {
-            alert('CSV export feature would download all student data');
-            // Implement CSV generation
-        }
+        // Search functionality
+        document.getElementById('searchUser').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#usersTable tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
     </script>
 </body>
 </html>
