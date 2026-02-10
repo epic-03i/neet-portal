@@ -1182,12 +1182,89 @@
         let currentUser = null;
         let userId = null;
         
-        // NEET Schedule Data
+        // NEET Schedule Data - Complete 82 days
         const neetSchedule = [
             {day: 1, date: "Tuesday, February 10, 2026", topic: "Plant Growth Hormones", difficulty: "Easy", subject: "Botany"},
             {day: 2, date: "Wednesday, February 11, 2026", topic: "Mineral Nutrition", difficulty: "Medium", subject: "Botany"},
             {day: 3, date: "Thursday, February 12, 2026", topic: "Transport in Plants", difficulty: "Medium", subject: "Botany"},
-            // ... (all 82 days as before)
+            {day: 4, date: "Friday, February 13, 2026", topic: "Respiration in Plants", difficulty: "Hard", subject: "Botany"},
+            {day: 5, date: "Saturday, February 14, 2026", topic: "Respiration in Plants", difficulty: "Hard", subject: "Botany"},
+            {day: 6, date: "Sunday, February 15, 2026", topic: "Photosynthesis", difficulty: "Hard", subject: "Botany"},
+            {day: 7, date: "Monday, February 16, 2026", topic: "Photosynthesis", difficulty: "Hard", subject: "Botany"},
+            {day: 8, date: "Tuesday, February 17, 2026", topic: "Photosynthesis", difficulty: "Hard", subject: "Botany"},
+            {day: 9, date: "Wednesday, February 18, 2026", topic: "Sexual Reproduction (Plants)", difficulty: "Hard", subject: "Botany"},
+            {day: 10, date: "Thursday, February 19, 2026", topic: "Sexual Reproduction (Plants)", difficulty: "Hard", subject: "Botany"},
+            {day: 11, date: "Friday, February 20, 2026", topic: "Sexual Reproduction (Plants)", difficulty: "Hard", subject: "Botany"},
+            {day: 12, date: "Saturday, February 21, 2026", topic: "Botany Revision + NCERT", difficulty: "Revision", subject: "Botany"},
+            {day: 13, date: "Sunday, February 22, 2026", topic: "Botany Revision + NCERT", difficulty: "Revision", subject: "Botany"},
+            {day: 14, date: "Monday, February 23, 2026", topic: "Botany Revision + NCERT", difficulty: "Revision", subject: "Botany"},
+            {day: 15, date: "Tuesday, February 24, 2026", topic: "Botany Revision + NCERT", difficulty: "Revision", subject: "Botany"},
+            {day: 16, date: "Wednesday, February 25, 2026", topic: "Ecology", difficulty: "Easy", subject: "Zoology"},
+            {day: 17, date: "Thursday, February 26, 2026", topic: "Digestion", difficulty: "Medium", subject: "Zoology"},
+            {day: 18, date: "Friday, February 27, 2026", topic: "Breathing & Respiration", difficulty: "Medium", subject: "Zoology"},
+            {day: 19, date: "Saturday, February 28, 2026", topic: "Excretion", difficulty: "Medium", subject: "Zoology"},
+            {day: 20, date: "Sunday, March 1, 2026", topic: "Circulation", difficulty: "Hard", subject: "Zoology"},
+            {day: 21, date: "Monday, March 2, 2026", topic: "Circulation", difficulty: "Hard", subject: "Zoology"},
+            {day: 22, date: "Tuesday, March 3, 2026", topic: "Endocrine System", difficulty: "Hard", subject: "Zoology"},
+            {day: 23, date: "Wednesday, March 4, 2026", topic: "Neural Control", difficulty: "Hard", subject: "Zoology"},
+            {day: 24, date: "Thursday, March 5, 2026", topic: "Neural Control", difficulty: "Hard", subject: "Zoology"},
+            {day: 25, date: "Friday, March 6, 2026", topic: "Reproduction (Humans)", difficulty: "Hard", subject: "Zoology"},
+            {day: 26, date: "Saturday, March 7, 2026", topic: "Reproduction (Humans)", difficulty: "Hard", subject: "Zoology"},
+            {day: 27, date: "Sunday, March 8, 2026", topic: "Zoology Revision + PYQs", difficulty: "Revision", subject: "Zoology"},
+            {day: 28, date: "Monday, March 9, 2026", topic: "Zoology Revision + PYQs", difficulty: "Revision", subject: "Zoology"},
+            {day: 29, date: "Tuesday, March 10, 2026", topic: "Zoology Revision + PYQs", difficulty: "Revision", subject: "Zoology"},
+            {day: 30, date: "Wednesday, March 11, 2026", topic: "Zoology Revision + PYQs", difficulty: "Revision", subject: "Zoology"},
+            {day: 31, date: "Thursday, March 12, 2026", topic: "Periodic Trends", difficulty: "Easy", subject: "Inorganic Chemistry"},
+            {day: 32, date: "Friday, March 13, 2026", topic: "p-Block", difficulty: "Medium", subject: "Inorganic Chemistry"},
+            {day: 33, date: "Saturday, March 14, 2026", topic: "d & f Block", difficulty: "Medium", subject: "Inorganic Chemistry"},
+            {day: 34, date: "Sunday, March 15, 2026", topic: "Chemical Bonding", difficulty: "Hard", subject: "Inorganic Chemistry"},
+            {day: 35, date: "Monday, March 16, 2026", topic: "Chemical Bonding", difficulty: "Hard", subject: "Inorganic Chemistry"},
+            {day: 36, date: "Tuesday, March 17, 2026", topic: "Coordination Compounds", difficulty: "Hard", subject: "Inorganic Chemistry"},
+            {day: 37, date: "Wednesday, March 18, 2026", topic: "Coordination Compounds", difficulty: "Hard", subject: "Inorganic Chemistry"},
+            {day: 38, date: "Thursday, March 19, 2026", topic: "Inorganic NCERT Revision", difficulty: "Revision", subject: "Inorganic Chemistry"},
+            {day: 39, date: "Friday, March 20, 2026", topic: "Biomolecules", difficulty: "Easy", subject: "Organic Chemistry"},
+            {day: 40, date: "Saturday, March 21, 2026", topic: "Hydrocarbons", difficulty: "Medium", subject: "Organic Chemistry"},
+            {day: 41, date: "Sunday, March 22, 2026", topic: "Haloalkanes", difficulty: "Medium", subject: "Organic Chemistry"},
+            {day: 42, date: "Monday, March 23, 2026", topic: "Alcohols & Phenols", difficulty: "Medium", subject: "Organic Chemistry"},
+            {day: 43, date: "Tuesday, March 24, 2026", topic: "Carbonyl Compounds", difficulty: "Hard", subject: "Organic Chemistry"},
+            {day: 44, date: "Wednesday, March 25, 2026", topic: "Carbonyl Compounds", difficulty: "Hard", subject: "Organic Chemistry"},
+            {day: 45, date: "Thursday, March 26, 2026", topic: "Amines", difficulty: "Hard", subject: "Organic Chemistry"},
+            {day: 46, date: "Friday, March 27, 2026", topic: "GOC", difficulty: "Hard", subject: "Organic Chemistry"},
+            {day: 47, date: "Saturday, March 28, 2026", topic: "GOC", difficulty: "Hard", subject: "Organic Chemistry"},
+            {day: 48, date: "Sunday, March 29, 2026", topic: "Organic Revision + PYQs", difficulty: "Revision", subject: "Organic Chemistry"},
+            {day: 49, date: "Monday, March 30, 2026", topic: "Gaseous State", difficulty: "Easy", subject: "Physical Chemistry"},
+            {day: 50, date: "Tuesday, March 31, 2026", topic: "Solutions", difficulty: "Medium", subject: "Physical Chemistry"},
+            {day: 51, date: "Wednesday, April 1, 2026", topic: "Chemical Kinetics", difficulty: "Medium", subject: "Physical Chemistry"},
+            {day: 52, date: "Thursday, April 2, 2026", topic: "Chemical Kinetics", difficulty: "Medium", subject: "Physical Chemistry"},
+            {day: 53, date: "Friday, April 3, 2026", topic: "Electrochemistry", difficulty: "Hard", subject: "Physical Chemistry"},
+            {day: 54, date: "Saturday, April 4, 2026", topic: "Electrochemistry", difficulty: "Hard", subject: "Physical Chemistry"},
+            {day: 55, date: "Sunday, April 5, 2026", topic: "Thermodynamics", difficulty: "Hard", subject: "Physical Chemistry"},
+            {day: 56, date: "Monday, April 6, 2026", topic: "Thermodynamics", difficulty: "Hard", subject: "Physical Chemistry"},
+            {day: 57, date: "Tuesday, April 7, 2026", topic: "Physical Chem PYQs", difficulty: "Revision", subject: "Physical Chemistry"},
+            {day: 58, date: "Wednesday, April 8, 2026", topic: "Physical Chem Revision", difficulty: "Revision", subject: "Physical Chemistry"},
+            {day: 59, date: "Thursday, April 9, 2026", topic: "Gravitation", difficulty: "Easy", subject: "Physics (Mechanics)"},
+            {day: 60, date: "Friday, April 10, 2026", topic: "Laws of Motion", difficulty: "Easy-Medium", subject: "Physics (Mechanics)"},
+            {day: 61, date: "Saturday, April 11, 2026", topic: "Work-Energy-Power", difficulty: "Medium", subject: "Physics (Mechanics)"},
+            {day: 62, date: "Sunday, April 12, 2026", topic: "Centre of Mass", difficulty: "Medium-Hard", subject: "Physics (Mechanics)"},
+            {day: 63, date: "Monday, April 13, 2026", topic: "Collisions", difficulty: "Hard", subject: "Physics (Mechanics)"},
+            {day: 64, date: "Tuesday, April 14, 2026", topic: "Circular Motion", difficulty: "Hard", subject: "Physics (Mechanics)"},
+            {day: 65, date: "Wednesday, April 15, 2026", topic: "Mechanics PYQs", difficulty: "Revision", subject: "Physics (Mechanics)"},
+            {day: 66, date: "Thursday, April 16, 2026", topic: "Current Electricity", difficulty: "Easy", subject: "Electricity & Magnetism"},
+            {day: 67, date: "Friday, April 17, 2026", topic: "Capacitors", difficulty: "Medium", subject: "Electricity & Magnetism"},
+            {day: 68, date: "Saturday, April 18, 2026", topic: "Magnetic Effects", difficulty: "Medium", subject: "Electricity & Magnetism"},
+            {day: 69, date: "Sunday, April 19, 2026", topic: "EMI", difficulty: "Hard", subject: "Electricity & Magnetism"},
+            {day: 70, date: "Monday, April 20, 2026", topic: "AC Circuits", difficulty: "Hard", subject: "Electricity & Magnetism"},
+            {day: 71, date: "Tuesday, April 21, 2026", topic: "Semiconductors / Atoms / Nuclei", difficulty: "Easy", subject: "Optics & Modern Physics"},
+            {day: 72, date: "Wednesday, April 22, 2026", topic: "Photoelectric Effect", difficulty: "Medium", subject: "Optics & Modern Physics"},
+            {day: 73, date: "Thursday, April 23, 2026", topic: "Ray Optics", difficulty: "Medium", subject: "Optics & Modern Physics"},
+            {day: 74, date: "Friday, April 24, 2026", topic: "YDSE", difficulty: "Hard", subject: "Optics & Modern Physics"},
+            {day: 75, date: "Saturday, April 25, 2026", topic: "Chemistry full revision", difficulty: "Revision", subject: "FINAL REVISION"},
+            {day: 76, date: "Sunday, April 26, 2026", topic: "Chemistry full revision", difficulty: "Revision", subject: "FINAL REVISION"},
+            {day: 77, date: "Monday, April 27, 2026", topic: "Biology NCERT diagrams + tables", difficulty: "Revision", subject: "FINAL REVISION"},
+            {day: 78, date: "Tuesday, April 28, 2026", topic: "Biology NCERT diagrams + tables", difficulty: "Revision", subject: "FINAL REVISION"},
+            {day: 79, date: "Wednesday, April 29, 2026", topic: "Physics formula + weak topics", difficulty: "Revision", subject: "FINAL REVISION"},
+            {day: 80, date: "Thursday, April 30, 2026", topic: "Full NEET Mock + analysis", difficulty: "Mock", subject: "FINAL REVISION"},
+            {day: 81, date: "Friday, May 1, 2026", topic: "Weak areas revision", difficulty: "Revision", subject: "FINAL REVISION"},
             {day: 82, date: "Saturday, May 2, 2026", topic: "Light revision + rest", difficulty: "Revision", subject: "FINAL REVISION"}
         ];
         
@@ -1675,29 +1752,84 @@
             loadQuestionsFromFirebase(day);
         }
         
+        // ========== FIXED QUESTION LOADING FUNCTION ==========
         function loadQuestionsFromFirebase(day) {
-            // Try to load questions from Firebase
+            console.log(`Loading questions for Day ${day} from Firebase...`);
+            
             database.ref(`questions/day${day}`).once('value')
                 .then(snapshot => {
                     if (snapshot.exists()) {
-                        // Load real questions from Firebase
                         const questionsData = snapshot.val();
-                        testQuestions = Object.values(questionsData);
-                        console.log(`Loaded ${testQuestions.length} questions from Firebase for Day ${day}`);
+                        console.log('Raw data from Firebase:', questionsData);
+                        
+                        // Check if the data has the structure you provided from admin panel
+                        if (questionsData.questions && Array.isArray(questionsData.questions)) {
+                            console.log('Detected admin panel structure with questions array');
+                            testQuestions = questionsData.questions.map((q, index) => {
+                                // Convert the options object to array format
+                                const optionsArray = [];
+                                if (q.options) {
+                                    // Handle both object format {A: "text", B: "text"} and array format
+                                    if (typeof q.options === 'object' && !Array.isArray(q.options)) {
+                                        Object.entries(q.options).forEach(([key, value]) => {
+                                            optionsArray.push({
+                                                id: key,
+                                                text: value
+                                            });
+                                        });
+                                    } else if (Array.isArray(q.options)) {
+                                        optionsArray.push(...q.options);
+                                    }
+                                }
+                                
+                                return {
+                                    id: q.id || index + 1,
+                                    text: q.question || q.text || `Question ${index + 1}`,
+                                    options: optionsArray.length > 0 ? optionsArray : [
+                                        {id: 'A', text: 'Option A'},
+                                        {id: 'B', text: 'Option B'},
+                                        {id: 'C', text: 'Option C'},
+                                        {id: 'D', text: 'Option D'}
+                                    ],
+                                    correctAnswer: q.answer || q.correctAnswer || 'A',
+                                    explanation: q.explanation || 'No explanation available'
+                                };
+                            });
+                        } else if (Array.isArray(questionsData)) {
+                            console.log('Detected array structure');
+                            testQuestions = questionsData.map((q, index) => ({
+                                id: q.id || index + 1,
+                                text: q.text || q.question || `Question ${index + 1}`,
+                                options: q.options || [
+                                    {id: 'A', text: 'Option A'},
+                                    {id: 'B', text: 'Option B'},
+                                    {id: 'C', text: 'Option C'},
+                                    {id: 'D', text: 'Option D'}
+                                ],
+                                correctAnswer: q.correctAnswer || q.answer || 'A',
+                                explanation: q.explanation || 'No explanation available'
+                            }));
+                        } else {
+                            console.log('Unknown structure, generating sample questions');
+                            generateSampleQuestions(day);
+                        }
+                        
+                        console.log(`Successfully loaded ${testQuestions.length} questions for Day ${day}`);
                     } else {
-                        // If no questions in Firebase, generate sample questions
-                        console.log(`No questions in Firebase for Day ${day}. Generating sample questions.`);
+                        console.log(`No questions found for Day ${day} in Firebase`);
                         generateSampleQuestions(day);
                     }
                     
-                    // Load first question
-                    loadQuestion();
+                    if (testQuestions.length === 0) {
+                        console.log('No questions loaded, generating sample');
+                        generateSampleQuestions(day);
+                    }
                     
-                    // Start timer
+                    loadQuestion();
                     startTestTimer();
                 })
                 .catch(error => {
-                    console.error('Error loading questions:', error);
+                    console.error('Error loading questions from Firebase:', error);
                     generateSampleQuestions(day);
                     loadQuestion();
                     startTestTimer();
@@ -1705,6 +1837,7 @@
         }
         
         function generateSampleQuestions(day) {
+            console.log(`Generating sample questions for Day ${day}`);
             const dayInfo = neetSchedule.find(d => d.day === day);
             testQuestions = [];
             
@@ -1726,7 +1859,10 @@
         }
         
         function loadQuestion() {
-            if (testQuestions.length === 0) return;
+            if (testQuestions.length === 0) {
+                console.error('No questions to load');
+                return;
+            }
             
             const question = testQuestions[currentQuestionIndex];
             const questionDisplay = document.getElementById('questionDisplay');
@@ -1978,47 +2114,24 @@
         function showReviewForCompletedTest(day, testData) {
             currentTestDay = day;
             
-            // We need to load the questions that were used in this test
-            // For now, we'll use sample questions. In production, you'd load from testData.questions
-            loadQuestionsFromFirebaseForReview(day, testData);
-        }
-        
-        function loadQuestionsFromFirebaseForReview(day, testData) {
-            database.ref(`questions/day${day}`).once('value')
-                .then(snapshot => {
-                    if (snapshot.exists()) {
-                        testQuestions = Object.values(snapshot.val());
-                    } else {
-                        generateSampleQuestions(day);
-                    }
-                    
-                    testResults = {
-                        day: day,
-                        score: testData.score,
-                        total: testData.total,
-                        percentage: testData.percentage,
-                        timeTaken: testData.timeTaken,
-                        answers: testData.answers,
-                        questions: testQuestions,
-                        dateCompleted: testData.dateCompleted
-                    };
-                    
-                    showReviewScreen();
-                })
-                .catch(() => {
-                    generateSampleQuestions(day);
-                    testResults = {
-                        day: day,
-                        score: testData.score,
-                        total: testData.total,
-                        percentage: testData.percentage,
-                        timeTaken: testData.timeTaken,
-                        answers: testData.answers,
-                        questions: testQuestions,
-                        dateCompleted: testData.dateCompleted
-                    };
-                    showReviewScreen();
-                });
+            // Load the questions for review
+            loadQuestionsFromFirebase(day);
+            
+            // Wait for questions to load, then set up review data
+            setTimeout(() => {
+                testResults = {
+                    day: day,
+                    score: testData.score,
+                    total: testData.total,
+                    percentage: testData.percentage,
+                    timeTaken: testData.timeTaken,
+                    answers: testData.answers,
+                    questions: testQuestions,
+                    dateCompleted: testData.dateCompleted
+                };
+                
+                showReviewScreen();
+            }, 500);
         }
         
         function backToResults() {
