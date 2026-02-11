@@ -1101,7 +1101,7 @@
         <!-- Tests Tab -->
         <div id="testsTab" class="dashboard-content" style="display: none;">
             <h2 style="color: #1e293b; margin-bottom: 20px;">Select Day for Test</h2>
-            <p style="color: #64748b; margin-bottom: 25px;">Each test has 30 questions with 60-minute time limit</p>
+            <p style="color: #64748b; margin-bottom: 25px;">Each test has 30 questions with 30-minute time limit</p> <!-- CHANGED -->
             
             <div class="day-grid" id="testDaySelector">
                 <!-- Days will be populated -->
@@ -1208,7 +1208,7 @@
             <p id="testTopic">Plant Growth Hormones (Easy)</p>
         </div>
         
-        <div class="timer" id="testTimer">60:00</div>
+        <div class="timer" id="testTimer">30:00</div> <!-- CHANGED -->
         
         <div class="question-container">
             <div class="test-info" id="testDayInfo">
@@ -1433,7 +1433,7 @@
         let testQuestions = [];
         let currentQuestionIndex = 0;
         let testTimer = null;
-        let timeRemaining = 60 * 60;
+        let timeRemaining = 30 * 60; // CHANGED: 30 minutes instead of 60
         let userAnswers = {};
         let testStartTime = null;
         let testEndTime = null;
@@ -1986,7 +1986,7 @@
         function startTest(day) {
             currentTestDay = day;
             currentQuestionIndex = 0;
-            timeRemaining = 60 * 60;
+            timeRemaining = 30 * 60; // CHANGED: 30 minutes instead of 60
             userAnswers = {};
             testStartTime = new Date();
             
@@ -2007,7 +2007,7 @@
                     </div>
                     <div style="text-align: right;">
                         <p style="color: #64748b; margin: 0;">Date: ${dayInfo.date}</p>
-                        <p style="color: #64748b; margin: 0;">Time Limit: 60 minutes</p>
+                        <p style="color: #64748b; margin: 0;">Time Limit: 30 minutes</p> <!-- CHANGED -->
                     </div>
                 </div>
             `;
@@ -2034,25 +2034,22 @@
                         // Initialize testQuestions array
                         testQuestions = [];
                         
-                        // Check if the data has the structure you provided from admin panel
+                        // Check if the data has the structure you provided (with questions array)
                         if (questionsData.questions && Array.isArray(questionsData.questions)) {
-                            console.log('Detected admin panel structure with questions array');
+                            console.log('Detected JSON structure with questions array');
                             
                             questionsData.questions.forEach((q, index) => {
                                 // Convert the options object to array format
                                 const optionsArray = [];
-                                if (q.options) {
-                                    // Handle both object format {A: "text", B: "text"} and array format
-                                    if (typeof q.options === 'object' && !Array.isArray(q.options)) {
-                                        Object.entries(q.options).forEach(([key, value]) => {
-                                            optionsArray.push({
-                                                id: key,
-                                                text: value
-                                            });
+                                
+                                // Handle options in object format {A: "text", B: "text", C: "text", D: "text"}
+                                if (q.options && typeof q.options === 'object') {
+                                    Object.entries(q.options).forEach(([key, value]) => {
+                                        optionsArray.push({
+                                            id: key,
+                                            text: value
                                         });
-                                    } else if (Array.isArray(q.options)) {
-                                        optionsArray.push(...q.options);
-                                    }
+                                    });
                                 } else {
                                     // If no options provided, create default options
                                     optionsArray.push(
@@ -2066,9 +2063,9 @@
                                 // Add the question to testQuestions
                                 testQuestions.push({
                                     id: q.id || index + 1,
-                                    text: q.question || q.text || `Question ${index + 1}`,
+                                    text: q.question || `Question ${index + 1}`,
                                     options: optionsArray,
-                                    correctAnswer: q.answer || q.correctAnswer || 'A',
+                                    correctAnswer: q.answer || 'A',
                                     explanation: q.explanation || 'No explanation available'
                                 });
                             });
@@ -2084,7 +2081,52 @@
                             startTestTimer();
                             
                         } else {
-                            console.log('No questions found in the expected format for Day', day);
+                            // Try alternative structure - maybe questions are directly under day
+                            console.log('Trying alternative structure...');
+                            
+                            // Check if there are any direct question objects
+                            let hasQuestions = false;
+                            Object.keys(questionsData).forEach(key => {
+                                if (questionsData[key] && questionsData[key].question) {
+                                    hasQuestions = true;
+                                }
+                            });
+                            
+                            if (hasQuestions) {
+                                // Process each question
+                                Object.entries(questionsData).forEach(([key, q]) => {
+                                    if (q && q.question) {
+                                        const optionsArray = [];
+                                        
+                                        if (q.options && typeof q.options === 'object') {
+                                            Object.entries(q.options).forEach(([optKey, optValue]) => {
+                                                optionsArray.push({
+                                                    id: optKey,
+                                                    text: optValue
+                                                });
+                                            });
+                                        }
+                                        
+                                        testQuestions.push({
+                                            id: q.id || key,
+                                            text: q.question,
+                                            options: optionsArray,
+                                            correctAnswer: q.answer || 'A',
+                                            explanation: q.explanation || 'No explanation available'
+                                        });
+                                    }
+                                });
+                                
+                                console.log(`Loaded ${testQuestions.length} questions from alternative structure`);
+                                
+                                if (testQuestions.length > 0) {
+                                    loadQuestion();
+                                    startTestTimer();
+                                    return;
+                                }
+                            }
+                            
+                            console.log('No questions found in any expected format for Day', day);
                             showNoQuestionsError(day);
                         }
                     } else {
@@ -2197,9 +2239,9 @@
             document.getElementById('testTimer').textContent = 
                 `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             
-            if (timeRemaining <= 300) {
+            if (timeRemaining <= 300) { // 5 minutes remaining
                 document.getElementById('testTimer').style.background = '#dc2626';
-            } else if (timeRemaining <= 600) {
+            } else if (timeRemaining <= 600) { // 10 minutes remaining
                 document.getElementById('testTimer').style.background = '#ea580c';
             }
         }
