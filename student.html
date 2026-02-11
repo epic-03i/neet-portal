@@ -715,7 +715,7 @@
             background: white;
             padding: 30px;
             border-radius: 15px;
-            max-width = 500px;
+            max-width : 500px;
             width: 90%;
             text-align: center;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
@@ -808,6 +808,97 @@
                 width: 100%;
             }
         }
+
+        /* ========== NEET COUNTDOWN TIMER STYLES ========== */
+        .neet-countdown-card {
+            animation: pulse 2s infinite;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            text-align: center;
+            border: 2px solid #fbbf24;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(251, 191, 36, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+        }
+
+        .countdown-unit {
+            text-align: center;
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .countdown-unit:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .countdown-value {
+            font-size: 32px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            line-height: 1;
+        }
+
+        .countdown-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.9);
+            margin-top: 5px;
+        }
+
+        /* Critical time warnings */
+        .countdown-critical .countdown-value {
+            color: #ef4444;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* For the header countdown */
+        #neetCountdown {
+            transition: all 0.3s ease;
+        }
+
+        #neetCountdown:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive adjustments for countdown */
+        @media (max-width: 768px) {
+            .countdown-value {
+                font-size: 24px;
+            }
+            
+            .countdown-unit {
+                padding: 8px;
+            }
+            
+            #neetCountdown {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+            
+            #countdownTimer {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -878,6 +969,21 @@
         <div class="dashboard-header">
             <div class="welcome-message" id="welcomeMessage">Welcome, Student!</div>
             <div class="student-id" id="studentId">ID: Loading...</div>
+            
+            <!-- NEET Countdown Timer -->
+            <div id="neetCountdown" style="
+                background: rgba(255,255,255,0.15);
+                padding: 8px 20px;
+                border-radius: 20px;
+                font-size: 14px;
+                margin-top: 15px;
+                display: inline-block;
+                font-weight: 500;
+                backdrop-filter: blur(10px);">
+
+                <span style="margin-right: 10px;">⏳</span>
+                <span id="countdownText">NEET 2026: Loading...</span>
+            </div>
         </div>
         
         <div class="dashboard-tabs">
@@ -927,6 +1033,60 @@
                 <div class="stat-card">
                     <div class="stat-value" id="streakDays">0</div>
                     <div class="stat-label">Day Streak</div>
+                </div>
+            </div>
+
+            <!-- NEET Countdown Card -->
+            <div class="neet-countdown-card">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px;">
+                    <div style="font-size: 24px;">⏰</div>
+                    <h3 style="color: white; margin: 0;">NEET 2026 Countdown</h3>
+                </div>
+                
+                <div id="countdownTimer" style="
+                    display: grid;
+                    grid-template-columns: repeat(4, 1fr);
+                    gap: 15px;
+                    margin: 20px 0;
+                ">
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="countdown-days">00</div>
+                        <div class="countdown-label">Days</div>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="countdown-hours">00</div>
+                        <div class="countdown-label">Hours</div>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="countdown-minutes">00</div>
+                        <div class="countdown-label">Minutes</div>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="countdown-seconds">00</div>
+                        <div class="countdown-label">Seconds</div>
+                    </div>
+                </div>
+                
+                <div id="motivationMessage" style="
+                    font-size: 16px;
+                    font-weight: 600;
+                    margin-top: 15px;
+                    padding: 10px;
+                    background: rgba(255,255,255,0.15);
+                    border-radius: 8px;
+                    border-left: 4px solid #fbbf24;
+                ">
+                    Loading motivation message...
+                </div>
+                
+                <div style="
+                    background: rgba(255,255,255,0.2);
+                    padding: 10px;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    margin-top: 15px;
+                ">
+                    <span style="font-weight: bold;">📅 Exam Date:</span> May 3, 2026 (Sunday)
                 </div>
             </div>
             
@@ -1443,9 +1603,118 @@
                 });
         }
         
+        // ========== NEET COUNTDOWN TIMER ==========
+        function startNEETCountdown() {
+            // NEET 2026 exam date: May 3, 2026 at 10:00 AM
+            const neetExamDate = new Date('May 3, 2026 10:00:00').getTime();
+            
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const timeRemaining = neetExamDate - now;
+                
+                if (timeRemaining < 0) {
+                    // Exam has passed
+                    document.getElementById('countdownText').innerHTML = '<span style="color: #10b981;">🎉 NEET 2026 Completed!</span>';
+                    document.getElementById('countdownTimer').innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 20px;">
+                            <div style="font-size: 48px; margin-bottom: 10px;">🎊</div>
+                            <h3 style="color: white; margin: 0; font-size: 24px;">Congratulations!</h3>
+                            <p style="opacity: 0.9; margin-top: 10px; font-size: 16px;">NEET 2026 has been completed.</p>
+                            <p style="opacity: 0.8; margin-top: 5px;">Best wishes for your results! 🙏</p>
+                        </div>
+                    `;
+                    
+                    document.getElementById('motivationMessage').innerHTML = 
+                        '🎓 Your hard work will pay off! Results coming soon!';
+                    
+                    return;
+                }
+                
+                // Calculate time units
+                const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+                
+                // Update header countdown
+                const headerText = `NEET 2026: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+                document.getElementById('countdownText').textContent = headerText;
+                
+                // Update detailed countdown
+                document.getElementById('countdown-days').textContent = days.toString().padStart(2, '0');
+                document.getElementById('countdown-hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('countdown-minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('countdown-seconds').textContent = seconds.toString().padStart(2, '0');
+                
+                // Add critical warning if less than 24 hours
+                if (days === 0) {
+                    document.getElementById('countdownTimer').classList.add('countdown-critical');
+                    document.getElementById('countdownText').style.color = '#ef4444';
+                } else {
+                    document.getElementById('countdownTimer').classList.remove('countdown-critical');
+                    document.getElementById('countdownText').style.color = 'white';
+                }
+                
+                // Update motivation message
+                updateMotivationMessage(days);
+            }
+            
+            // Update immediately and then every second
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        }
+        
+        function updateMotivationMessage(days) {
+            const messages = [
+                { threshold: 0, message: "Exam day! Give your best! 💪", color: "#ef4444" },
+                { threshold: 1, message: "Final day! Stay focused! 🎯", color: "#f59e0b" },
+                { threshold: 7, message: "Final week! Intensive revision! 📚", color: "#f59e0b" },
+                { threshold: 30, message: "One month to go! Stay consistent! ⏳", color: "#3b82f6" },
+                { threshold: 60, message: "Two months remaining! Keep pushing! 🔥", color: "#3b82f6" },
+                { threshold: 90, message: "Three months to NEET! You can do it! ✨", color: "#10b981" },
+                { threshold: 120, message: "Four months left! Stay motivated! 🌟", color: "#10b981" },
+                { threshold: 150, message: "Five months remaining! Daily practice is key! 📅", color: "#10b981" },
+                { threshold: 180, message: "Six months to go! Build strong foundations! 🏗️", color: "#8b5cf6" },
+                { threshold: 240, message: "Eight months left! Enjoy the learning journey! 📚", color: "#8b5cf6" },
+                { threshold: 300, message: "Ten months remaining! Start with basics! 🌟", color: "#8b5cf6" },
+                { threshold: 365, message: "One year to NEET! Perfect time to begin! 🚀", color: "#8b5cf6" }
+            ];
+            
+            // Default message if no threshold matches
+            let currentMessage = "Your NEET journey continues! Stay dedicated! 🎓";
+            let messageColor = "#8b5cf6";
+            
+            // Find the appropriate message
+            for (const msg of messages) {
+                if (days <= msg.threshold) {
+                    currentMessage = msg.message;
+                    messageColor = msg.color;
+                    break;
+                }
+            }
+            
+            // Add random variation for same threshold days
+            const sameThresholdMsgs = messages.filter(m => m.threshold === messages.find(msg => days <= msg.threshold)?.threshold);
+            if (sameThresholdMsgs.length > 1) {
+                const randomMsg = sameThresholdMsgs[Math.floor(Math.random() * sameThresholdMsgs.length)];
+                currentMessage = randomMsg.message;
+                messageColor = randomMsg.color;
+            }
+            
+            const motivationEl = document.getElementById('motivationMessage');
+            if (motivationEl) {
+                motivationEl.innerHTML = currentMessage;
+                motivationEl.style.color = messageColor;
+                motivationEl.style.fontWeight = '600';
+            }
+        }
+        
         // ========== DASHBOARD FUNCTIONS ==========
         function updateDashboard() {
             if (!currentUser || !userId) return;
+            
+            // Start the countdown timer
+            startNEETCountdown();
             
             document.getElementById('welcomeMessage').textContent = `Welcome, ${currentUser.fullName || currentUser.username}!`;
             document.getElementById('studentId').textContent = `ID: ${userId.substring(0, 8)}`;
@@ -2158,6 +2427,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             checkAutoLogin();
             showAuthTab('login');
+            // Start countdown timer even if not logged in
+            startNEETCountdown();
         });
     </script>
 </body>
