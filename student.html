@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>NEET Prep Portal - Student</title>
+    <title>NEET Prep Portal - Student (10 Weeks)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         /* ========== ALL CSS IN ONE FILE ========== */
@@ -55,6 +55,7 @@
         .auth-subtitle {
             color: #64748b;
             margin-bottom: 30px;
+            font-size: 14px;
         }
         
         .auth-tabs {
@@ -129,6 +130,7 @@
         /* Dashboard */
         .dashboard {
             display: none;
+            position: relative;
         }
         
         .dashboard-header {
@@ -193,6 +195,8 @@
         .dashboard-content {
             padding: 25px;
             min-height: 400px;
+            max-height: 600px;
+            overflow-y: auto;
         }
         
         /* Progress Dashboard */
@@ -268,55 +272,68 @@
             color: #6b7280;
         }
         
-        .day-progress {
+        .week-progress {
             margin: 30px 0;
         }
         
-        .day-progress-title {
+        .week-progress-title {
             font-size: 18px;
             font-weight: 600;
             margin-bottom: 15px;
             color: #1f2937;
         }
         
-        .day-grid {
+        .week-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
-            gap: 8px;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 10px;
         }
         
-        .day-cell {
-            width: 40px;
-            height: 40px;
+        .week-cell {
+            height: 60px;
             border-radius: 8px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             font-weight: bold;
             font-size: 14px;
             cursor: pointer;
             transition: all 0.3s;
+            border: 2px solid transparent;
         }
         
-        .day-cell.completed {
+        .week-cell.completed {
             background: #10b981;
             color: white;
         }
         
-        .day-cell.current {
+        .week-cell.current {
             background: #f59e0b;
             color: white;
+            border-color: #d97706;
         }
         
-        .day-cell.available {
+        .week-cell.available {
             background: #3b82f6;
             color: white;
         }
         
-        .day-cell.locked {
+        .week-cell.locked {
             background: #e5e7eb;
             color: #9ca3af;
             cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .week-number {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .week-questions {
+            font-size: 10px;
+            opacity: 0.9;
         }
         
         .test-history {
@@ -338,11 +355,13 @@
             padding: 12px;
             text-align: left;
             font-weight: 600;
+            font-size: 14px;
         }
         
         .history-table td {
             padding: 12px;
             border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
         }
         
         /* Certificate */
@@ -403,6 +422,8 @@
         .question-container {
             padding: 20px;
             min-height: 400px;
+            max-height: 600px;
+            overflow-y: auto;
         }
         
         .question {
@@ -416,9 +437,17 @@
             line-height: 1.5;
         }
         
+        .question-image {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 2px solid #e2e8f0;
+        }
+        
         .options {
             display: grid;
-            gap: 10px;
+            gap: 12px;
         }
         
         .option {
@@ -429,7 +458,7 @@
             transition: all 0.3s;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
         }
         
         .option:hover {
@@ -453,14 +482,16 @@
         }
         
         .option-label {
-            width: 30px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
             background: #e5e7eb;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
+            font-size: 16px;
+            flex-shrink: 0;
         }
         
         .option.selected .option-label {
@@ -478,9 +509,25 @@
             color: white;
         }
         
+        .option-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .option-image {
+            max-width: 80px;
+            max-height: 50px;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+        }
+        
         .test-controls {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             margin-top: 30px;
             padding: 20px;
             border-top: 1px solid #e5e7eb;
@@ -495,6 +542,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
+            min-width: 120px;
         }
         
         .test-btn:hover {
@@ -531,13 +579,19 @@
             background: #ef4444;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
+            font-size: 14px;
+            z-index: 100;
         }
         
-        /* Test Day Info */
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+        
+        /* Test Info */
         .test-info {
             background: #f8fafc;
             padding: 15px;
@@ -688,6 +742,13 @@
             border-radius: 8px;
         }
         
+        .explanation-image {
+            max-width: 100%;
+            max-height: 150px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        
         .review-controls {
             display: flex;
             justify-content: center;
@@ -715,7 +776,7 @@
             background: white;
             padding: 30px;
             border-radius: 15px;
-            max-width : 500px;
+            max-width: 500px;
             width: 90%;
             text-align: center;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
@@ -767,49 +828,7 @@
             background: #cbd5e1;
         }
         
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container {
-                max-width: 100%;
-                margin: 10px;
-            }
-            
-            .auth-container {
-                padding: 25px;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .day-grid {
-                grid-template-columns: repeat(auto-fill, minmax(35px, 1fr));
-            }
-            
-            .day-cell {
-                width: 35px;
-                height: 35px;
-                font-size: 12px;
-            }
-            
-            .test-interface {
-                max-width: 100%;
-            }
-            
-            .result-stats {
-                grid-template-columns: 1fr;
-            }
-            
-            .modal-buttons {
-                flex-direction: column;
-            }
-            
-            .modal-btn {
-                width: 100%;
-            }
-        }
-
-        /* ========== NEET COUNTDOWN TIMER STYLES ========== */
+        /* NEET Countdown Styles */
         .neet-countdown-card {
             animation: pulse 2s infinite;
             background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
@@ -858,7 +877,6 @@
             margin-top: 5px;
         }
 
-        /* Critical time warnings */
         .countdown-critical .countdown-value {
             color: #ef4444;
             animation: blink 1s infinite;
@@ -869,7 +887,6 @@
             50% { opacity: 0.5; }
         }
 
-        /* For the header countdown */
         #neetCountdown {
             transition: all 0.3s ease;
         }
@@ -878,9 +895,47 @@
             background: rgba(255,255,255,0.25);
             transform: translateY(-2px);
         }
-
-        /* Responsive adjustments for countdown */
+        
+        /* Responsive */
         @media (max-width: 768px) {
+            .container {
+                max-width: 100%;
+                margin: 10px;
+            }
+            
+            .auth-container {
+                padding: 25px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .week-grid {
+                grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            }
+            
+            .week-cell {
+                height: 50px;
+                font-size: 12px;
+            }
+            
+            .test-interface {
+                max-width: 100%;
+            }
+            
+            .result-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-buttons {
+                flex-direction: column;
+            }
+            
+            .modal-btn {
+                width: 100%;
+            }
+            
             .countdown-value {
                 font-size: 24px;
             }
@@ -898,6 +953,11 @@
                 grid-template-columns: repeat(2, 1fr);
                 gap: 10px;
             }
+            
+            .dashboard-tab {
+                padding: 12px 15px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -908,7 +968,7 @@
             <div class="auth-header">
                 <div class="auth-icon">🎓</div>
                 <h1 class="auth-title">NEET Preparation Portal</h1>
-                <p class="auth-subtitle">82 Days • 30 Questions Daily • Track Your Progress</p>
+                <p class="auth-subtitle">10 Weeks • 180 Questions Weekly • Track Your Progress</p>
             </div>
             
             <div class="auth-tabs">
@@ -957,7 +1017,7 @@
             </div>
             
             <div style="margin-top: 20px; text-align: center; color: #64748b; font-size: 14px;">
-                <p>Track your 82-day journey with detailed analytics and certificates</p>
+                <p>Track your 10-week journey with detailed analytics and certificates</p>
             </div>
         </div>
     </div>
@@ -1019,8 +1079,8 @@
             
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-value" id="completedDays">0</div>
-                    <div class="stat-label">Days Completed</div>
+                    <div class="stat-value" id="completedWeeks">0</div>
+                    <div class="stat-label">Weeks Completed</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value" id="avgScore">0%</div>
@@ -1031,8 +1091,8 @@
                     <div class="stat-label">Tests Taken</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value" id="streakDays">0</div>
-                    <div class="stat-label">Day Streak</div>
+                    <div class="stat-value" id="totalQuestions">0</div>
+                    <div class="stat-label">Qns Attempted</div>
                 </div>
             </div>
 
@@ -1090,21 +1150,21 @@
                 </div>
             </div>
             
-            <div class="day-progress">
-                <h3 class="day-progress-title">82-Day Progress</h3>
-                <div class="day-grid" id="dayProgressGrid">
-                    <!-- Days will be populated -->
+            <div class="week-progress">
+                <h3 class="week-progress-title">10-Week Progress (180 Questions Each)</h3>
+                <div class="week-grid" id="weekProgressGrid">
+                    <!-- Weeks will be populated -->
                 </div>
             </div>
         </div>
         
         <!-- Tests Tab -->
         <div id="testsTab" class="dashboard-content" style="display: none;">
-            <h2 style="color: #1e293b; margin-bottom: 20px;">Select Day for Test</h2>
-            <p style="color: #64748b; margin-bottom: 25px;">Each test has 30 questions with 30-minute time limit</p> <!-- CHANGED -->
+            <h2 style="color: #1e293b; margin-bottom: 20px;">Select Week for Test</h2>
+            <p style="color: #64748b; margin-bottom: 25px;">Each test has 180 questions with 3-hour time limit</p>
             
-            <div class="day-grid" id="testDaySelector">
-                <!-- Days will be populated -->
+            <div class="week-grid" id="testWeekSelector">
+                <!-- Weeks will be populated -->
             </div>
         </div>
         
@@ -1114,11 +1174,11 @@
             <table class="history-table" id="historyTable">
                 <thead>
                     <tr>
-                        <th>Day</th>
+                        <th>Week</th>
                         <th>Topic</th>
                         <th>Date</th>
                         <th>Score</th>
-                        <th>Percentage</th>
+                        <th>%</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -1136,7 +1196,7 @@
                     <!-- Certificate will be displayed here -->
                 </div>
                 <div id="noCertificate" style="padding: 40px; color: #6b7280; text-align: center;">
-                    <p style="font-size: 18px; margin-bottom: 20px;">Complete all 82 days to unlock your certificate!</p>
+                    <p style="font-size: 18px; margin-bottom: 20px;">Complete all 10 weeks to unlock your certificate!</p>
                     <div class="progress-circle" style="width: 120px; height: 120px; margin: 20px auto;">
                         <svg class="progress-ring" width="120" height="120">
                             <circle class="progress-ring-bg" cx="60" cy="60" r="52" stroke-width="8"></circle>
@@ -1146,13 +1206,13 @@
                             <div class="progress-percent" id="certProgressPercent">0%</div>
                         </div>
                     </div>
-                    <p id="daysRemaining">82 days remaining</p>
+                    <p id="weeksRemaining">10 weeks remaining</p>
                 </div>
                 
                 <div id="progressCertificate" style="display: none; margin-top: 30px;">
                     <div class="certificate-preview">
                         <h3 class="certificate-title">Progress Certificate</h3>
-                        <p>You have completed <strong id="progressDays">0</strong> out of 82 days</p>
+                        <p>You have completed <strong id="progressWeeks">0</strong> out of 10 weeks</p>
                         <p>Keep going! You're making great progress!</p>
                     </div>
                 </div>
@@ -1186,14 +1246,14 @@
                     </div>
                     
                     <div>
-                        <label style="color: #64748b; font-size: 14px;">Current Day</label>
-                        <p style="color: #1e293b; font-size: 18px; font-weight: 600;" id="profileCurrentDay">Day 1</p>
+                        <label style="color: #64748b; font-size: 14px;">Current Week</label>
+                        <p style="color: #1e293b; font-size: 18px; font-weight: 600;" id="profileCurrentWeek">Week 1</p>
                     </div>
                 </div>
                 
                 <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
                     <h3 style="color: #1e293b; margin-bottom: 15px;">Account Security</h3>
-                    <button onclick="changePassword()" style="padding: 12px 25px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                    <button onclick="changePassword()" style="padding: 12px 25px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
                         🔐 Change Password
                     </button>
                 </div>
@@ -1204,15 +1264,15 @@
     <!-- Test Interface -->
     <div id="testInterface" class="test-interface" style="display: none;">
         <div class="test-header">
-            <h2 id="testDayTitle">Day 1 Test</h2>
-            <p id="testTopic">Plant Growth Hormones (Easy)</p>
+            <h2 id="testWeekTitle">Week 1 Test</h2>
+            <p id="testTopic">Full Syllabus</p>
         </div>
         
-        <div class="timer" id="testTimer">30:00</div> <!-- CHANGED -->
+        <div class="timer" id="testTimer">180:00</div>
         
         <div class="question-container">
-            <div class="test-info" id="testDayInfo">
-                <!-- Test day info will be populated here -->
+            <div class="test-info" id="testWeekInfo">
+                <!-- Test week info will be populated here -->
             </div>
             
             <div class="progress-bar">
@@ -1226,7 +1286,7 @@
             <div class="test-controls">
                 <button id="prevBtn" class="test-btn" onclick="prevQuestion()" disabled>⬅ Previous</button>
                 <div>
-                    <span id="questionCounter">Question 1/30</span>
+                    <span id="questionCounter">Question 1/180</span>
                 </div>
                 <button id="nextBtn" class="test-btn" onclick="nextQuestion()">Next ➡</button>
                 <button id="submitBtn" class="test-btn submit" onclick="showSubmitConfirmation()" style="display: none;">Submit Test</button>
@@ -1238,13 +1298,13 @@
     <div id="resultScreen" class="test-interface" style="display: none;">
         <div class="test-header">
             <h2>Test Results</h2>
-            <p>Day <span id="resultDay">1</span> • <span id="resultTopic">Topic</span></p>
+            <p>Week <span id="resultWeek">1</span></p>
         </div>
         
         <div class="question-container">
             <div class="result-container">
                 <div class="result-icon pass" id="resultIcon">🎯</div>
-                <div class="result-score" id="finalScore">0/30</div>
+                <div class="result-score" id="finalScore">0/180</div>
                 <div class="result-message" id="resultMessage"></div>
                 
                 <div class="result-details">
@@ -1252,11 +1312,11 @@
                     <div class="result-stats">
                         <div class="result-stat">
                             <div class="result-stat-value" id="correctAnswers">0</div>
-                            <div class="result-stat-label">Correct Answers</div>
+                            <div class="result-stat-label">Correct</div>
                         </div>
                         <div class="result-stat">
                             <div class="result-stat-value" id="wrongAnswers">0</div>
-                            <div class="result-stat-label">Wrong Answers</div>
+                            <div class="result-stat-label">Wrong</div>
                         </div>
                         <div class="result-stat">
                             <div class="result-stat-value" id="percentageScore">0%</div>
@@ -1269,9 +1329,9 @@
                     </div>
                 </div>
                 
-                <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px;">
-                    <button onclick="backToDashboard()" class="test-btn">📊 Back to Dashboard</button>
-                    <button onclick="showReviewScreen()" class="test-btn warning">📝 Review Answers</button>
+                <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px; flex-wrap: wrap;">
+                    <button onclick="backToDashboard()" class="test-btn">📊 Dashboard</button>
+                    <button onclick="showReviewScreen()" class="test-btn warning">📝 Review</button>
                 </div>
             </div>
         </div>
@@ -1281,7 +1341,7 @@
     <div id="reviewScreen" class="test-interface" style="display: none;">
         <div class="test-header">
             <h2>Test Review</h2>
-            <p>Day <span id="reviewDay">1</span> • <span id="reviewTopic">Topic</span></p>
+            <p>Week <span id="reviewWeek">1</span></p>
         </div>
         
         <div class="question-container">
@@ -1292,8 +1352,8 @@
                 </div>
                 
                 <div class="review-controls">
-                    <button onclick="backToResults()" class="test-btn">⬅ Back to Results</button>
-                    <button onclick="backToDashboard()" class="test-btn">📊 Back to Dashboard</button>
+                    <button onclick="backToResults()" class="test-btn">⬅ Back</button>
+                    <button onclick="backToDashboard()" class="test-btn">📊 Dashboard</button>
                 </div>
             </div>
         </div>
@@ -1304,13 +1364,13 @@
         <div class="modal">
             <div class="modal-title">Submit Test?</div>
             <div class="modal-message">
-                Are you sure you want to submit the test?<br>
-                You have answered <span id="answeredCount">0</span> out of 30 questions.<br>
+                Are you sure you want to submit?<br>
+                You have answered <span id="answeredCount">0</span> out of 180 questions.<br>
                 Once submitted, you cannot change your answers.
             </div>
             <div class="modal-buttons">
                 <button class="modal-btn secondary" onclick="hideSubmitModal()">Cancel</button>
-                <button class="modal-btn primary" onclick="submitTest()">Submit Test</button>
+                <button class="modal-btn primary" onclick="submitTest()">Submit</button>
             </div>
         </div>
     </div>
@@ -1328,8 +1388,7 @@
             projectId: "neet-practise-4x",
             storageBucket: "neet-practise-4x.firebasestorage.app",
             messagingSenderId: "580564387981",
-            appId: "1:580564387981:web:14bca0642e18e2b568bac4",
-            measurementId: "G-XN5YWRFQHN"
+            appId: "1:580564387981:web:14bca0642e18e2b568bac4"
         };
         
         // Initialize Firebase
@@ -1342,98 +1401,26 @@
         let currentUser = null;
         let userId = null;
         
-        // NEET Schedule Data - Complete 82 days
-        const neetSchedule = [
-            {day: 1, date: "Tuesday, February 10, 2026", topic: "Plant Growth Hormones", difficulty: "Easy", subject: "Botany"},
-            {day: 2, date: "Wednesday, February 11, 2026", topic: "Mineral Nutrition", difficulty: "Medium", subject: "Botany"},
-            {day: 3, date: "Thursday, February 12, 2026", topic: "Transport in Plants", difficulty: "Medium", subject: "Botany"},
-            {day: 4, date: "Friday, February 13, 2026", topic: "Respiration in Plants", difficulty: "Hard", subject: "Botany"},
-            {day: 5, date: "Saturday, February 14, 2026", topic: "Respiration in Plants", difficulty: "Hard", subject: "Botany"},
-            {day: 6, date: "Sunday, February 15, 2026", topic: "Photosynthesis", difficulty: "Hard", subject: "Botany"},
-            {day: 7, date: "Monday, February 16, 2026", topic: "Photosynthesis", difficulty: "Hard", subject: "Botany"},
-            {day: 8, date: "Tuesday, February 17, 2026", topic: "Photosynthesis", difficulty: "Hard", subject: "Botany"},
-            {day: 9, date: "Wednesday, February 18, 2026", topic: "Sexual Reproduction (Plants)", difficulty: "Hard", subject: "Botany"},
-            {day: 10, date: "Thursday, February 19, 2026", topic: "Sexual Reproduction (Plants)", difficulty: "Hard", subject: "Botany"},
-            {day: 11, date: "Friday, February 20, 2026", topic: "Sexual Reproduction (Plants)", difficulty: "Hard", subject: "Botany"},
-            {day: 12, date: "Saturday, February 21, 2026", topic: "Botany Revision + NCERT", difficulty: "Revision", subject: "Botany"},
-            {day: 13, date: "Sunday, February 22, 2026", topic: "Botany Revision + NCERT", difficulty: "Revision", subject: "Botany"},
-            {day: 14, date: "Monday, February 23, 2026", topic: "Botany Revision + NCERT", difficulty: "Revision", subject: "Botany"},
-            {day: 15, date: "Tuesday, February 24, 2026", topic: "Botany Revision + NCERT", difficulty: "Revision", subject: "Botany"},
-            {day: 16, date: "Wednesday, February 25, 2026", topic: "Ecology", difficulty: "Easy", subject: "Zoology"},
-            {day: 17, date: "Thursday, February 26, 2026", topic: "Digestion", difficulty: "Medium", subject: "Zoology"},
-            {day: 18, date: "Friday, February 27, 2026", topic: "Breathing & Respiration", difficulty: "Medium", subject: "Zoology"},
-            {day: 19, date: "Saturday, February 28, 2026", topic: "Excretion", difficulty: "Medium", subject: "Zoology"},
-            {day: 20, date: "Sunday, March 1, 2026", topic: "Circulation", difficulty: "Hard", subject: "Zoology"},
-            {day: 21, date: "Monday, March 2, 2026", topic: "Circulation", difficulty: "Hard", subject: "Zoology"},
-            {day: 22, date: "Tuesday, March 3, 2026", topic: "Endocrine System", difficulty: "Hard", subject: "Zoology"},
-            {day: 23, date: "Wednesday, March 4, 2026", topic: "Neural Control", difficulty: "Hard", subject: "Zoology"},
-            {day: 24, date: "Thursday, March 5, 2026", topic: "Neural Control", difficulty: "Hard", subject: "Zoology"},
-            {day: 25, date: "Friday, March 6, 2026", topic: "Reproduction (Humans)", difficulty: "Hard", subject: "Zoology"},
-            {day: 26, date: "Saturday, March 7, 2026", topic: "Reproduction (Humans)", difficulty: "Hard", subject: "Zoology"},
-            {day: 27, date: "Sunday, March 8, 2026", topic: "Zoology Revision + PYQs", difficulty: "Revision", subject: "Zoology"},
-            {day: 28, date: "Monday, March 9, 2026", topic: "Zoology Revision + PYQs", difficulty: "Revision", subject: "Zoology"},
-            {day: 29, date: "Tuesday, March 10, 2026", topic: "Zoology Revision + PYQs", difficulty: "Revision", subject: "Zoology"},
-            {day: 30, date: "Wednesday, March 11, 2026", topic: "Zoology Revision + PYQs", difficulty: "Revision", subject: "Zoology"},
-            {day: 31, date: "Thursday, March 12, 2026", topic: "Periodic Trends", difficulty: "Easy", subject: "Inorganic Chemistry"},
-            {day: 32, date: "Friday, March 13, 2026", topic: "p-Block", difficulty: "Medium", subject: "Inorganic Chemistry"},
-            {day: 33, date: "Saturday, March 14, 2026", topic: "d & f Block", difficulty: "Medium", subject: "Inorganic Chemistry"},
-            {day: 34, date: "Sunday, March 15, 2026", topic: "Chemical Bonding", difficulty: "Hard", subject: "Inorganic Chemistry"},
-            {day: 35, date: "Monday, March 16, 2026", topic: "Chemical Bonding", difficulty: "Hard", subject: "Inorganic Chemistry"},
-            {day: 36, date: "Tuesday, March 17, 2026", topic: "Coordination Compounds", difficulty: "Hard", subject: "Inorganic Chemistry"},
-            {day: 37, date: "Wednesday, March 18, 2026", topic: "Coordination Compounds", difficulty: "Hard", subject: "Inorganic Chemistry"},
-            {day: 38, date: "Thursday, March 19, 2026", topic: "Inorganic NCERT Revision", difficulty: "Revision", subject: "Inorganic Chemistry"},
-            {day: 39, date: "Friday, March 20, 2026", topic: "Biomolecules", difficulty: "Easy", subject: "Organic Chemistry"},
-            {day: 40, date: "Saturday, March 21, 2026", topic: "Hydrocarbons", difficulty: "Medium", subject: "Organic Chemistry"},
-            {day: 41, date: "Sunday, March 22, 2026", topic: "Haloalkanes", difficulty: "Medium", subject: "Organic Chemistry"},
-            {day: 42, date: "Monday, March 23, 2026", topic: "Alcohols & Phenols", difficulty: "Medium", subject: "Organic Chemistry"},
-            {day: 43, date: "Tuesday, March 24, 2026", topic: "Carbonyl Compounds", difficulty: "Hard", subject: "Organic Chemistry"},
-            {day: 44, date: "Wednesday, March 25, 2026", topic: "Carbonyl Compounds", difficulty: "Hard", subject: "Organic Chemistry"},
-            {day: 45, date: "Thursday, March 26, 2026", topic: "Amines", difficulty: "Hard", subject: "Organic Chemistry"},
-            {day: 46, date: "Friday, March 27, 2026", topic: "GOC", difficulty: "Hard", subject: "Organic Chemistry"},
-            {day: 47, date: "Saturday, March 28, 2026", topic: "GOC", difficulty: "Hard", subject: "Organic Chemistry"},
-            {day: 48, date: "Sunday, March 29, 2026", topic: "Organic Revision + PYQs", difficulty: "Revision", subject: "Organic Chemistry"},
-            {day: 49, date: "Monday, March 30, 2026", topic: "Gaseous State", difficulty: "Easy", subject: "Physical Chemistry"},
-            {day: 50, date: "Tuesday, March 31, 2026", topic: "Solutions", difficulty: "Medium", subject: "Physical Chemistry"},
-            {day: 51, date: "Wednesday, April 1, 2026", topic: "Chemical Kinetics", difficulty: "Medium", subject: "Physical Chemistry"},
-            {day: 52, date: "Thursday, April 2, 2026", topic: "Chemical Kinetics", difficulty: "Medium", subject: "Physical Chemistry"},
-            {day: 53, date: "Friday, April 3, 2026", topic: "Electrochemistry", difficulty: "Hard", subject: "Physical Chemistry"},
-            {day: 54, date: "Saturday, April 4, 2026", topic: "Electrochemistry", difficulty: "Hard", subject: "Physical Chemistry"},
-            {day: 55, date: "Sunday, April 5, 2026", topic: "Thermodynamics", difficulty: "Hard", subject: "Physical Chemistry"},
-            {day: 56, date: "Monday, April 6, 2026", topic: "Thermodynamics", difficulty: "Hard", subject: "Physical Chemistry"},
-            {day: 57, date: "Tuesday, April 7, 2026", topic: "Physical Chem PYQs", difficulty: "Revision", subject: "Physical Chemistry"},
-            {day: 58, date: "Wednesday, April 8, 2026", topic: "Physical Chem Revision", difficulty: "Revision", subject: "Physical Chemistry"},
-            {day: 59, date: "Thursday, April 9, 2026", topic: "Gravitation", difficulty: "Easy", subject: "Physics (Mechanics)"},
-            {day: 60, date: "Friday, April 10, 2026", topic: "Laws of Motion", difficulty: "Easy-Medium", subject: "Physics (Mechanics)"},
-            {day: 61, date: "Saturday, April 11, 2026", topic: "Work-Energy-Power", difficulty: "Medium", subject: "Physics (Mechanics)"},
-            {day: 62, date: "Sunday, April 12, 2026", topic: "Centre of Mass", difficulty: "Medium-Hard", subject: "Physics (Mechanics)"},
-            {day: 63, date: "Monday, April 13, 2026", topic: "Collisions", difficulty: "Hard", subject: "Physics (Mechanics)"},
-            {day: 64, date: "Tuesday, April 14, 2026", topic: "Circular Motion", difficulty: "Hard", subject: "Physics (Mechanics)"},
-            {day: 65, date: "Wednesday, April 15, 2026", topic: "Mechanics PYQs", difficulty: "Revision", subject: "Physics (Mechanics)"},
-            {day: 66, date: "Thursday, April 16, 2026", topic: "Current Electricity", difficulty: "Easy", subject: "Electricity & Magnetism"},
-            {day: 67, date: "Friday, April 17, 2026", topic: "Capacitors", difficulty: "Medium", subject: "Electricity & Magnetism"},
-            {day: 68, date: "Saturday, April 18, 2026", topic: "Magnetic Effects", difficulty: "Medium", subject: "Electricity & Magnetism"},
-            {day: 69, date: "Sunday, April 19, 2026", topic: "EMI", difficulty: "Hard", subject: "Electricity & Magnetism"},
-            {day: 70, date: "Monday, April 20, 2026", topic: "AC Circuits", difficulty: "Hard", subject: "Electricity & Magnetism"},
-            {day: 71, date: "Tuesday, April 21, 2026", topic: "Semiconductors / Atoms / Nuclei", difficulty: "Easy", subject: "Optics & Modern Physics"},
-            {day: 72, date: "Wednesday, April 22, 2026", topic: "Photoelectric Effect", difficulty: "Medium", subject: "Optics & Modern Physics"},
-            {day: 73, date: "Thursday, April 23, 2026", topic: "Ray Optics", difficulty: "Medium", subject: "Optics & Modern Physics"},
-            {day: 74, date: "Friday, April 24, 2026", topic: "YDSE", difficulty: "Hard", subject: "Optics & Modern Physics"},
-            {day: 75, date: "Saturday, April 25, 2026", topic: "Chemistry full revision", difficulty: "Revision", subject: "FINAL REVISION"},
-            {day: 76, date: "Sunday, April 26, 2026", topic: "Chemistry full revision", difficulty: "Revision", subject: "FINAL REVISION"},
-            {day: 77, date: "Monday, April 27, 2026", topic: "Biology NCERT diagrams + tables", difficulty: "Revision", subject: "FINAL REVISION"},
-            {day: 78, date: "Tuesday, April 28, 2026", topic: "Biology NCERT diagrams + tables", difficulty: "Revision", subject: "FINAL REVISION"},
-            {day: 79, date: "Wednesday, April 29, 2026", topic: "Physics formula + weak topics", difficulty: "Revision", subject: "FINAL REVISION"},
-            {day: 80, date: "Thursday, April 30, 2026", topic: "Full NEET Mock + analysis", difficulty: "Mock", subject: "FINAL REVISION"},
-            {day: 81, date: "Friday, May 1, 2026", topic: "Weak areas revision", difficulty: "Revision", subject: "FINAL REVISION"},
-            {day: 82, date: "Saturday, May 2, 2026", topic: "Light revision + rest", difficulty: "Revision", subject: "FINAL REVISION"}
+        // 10-Week Schedule
+        const weekSchedule = [
+            {week: 1, topic: "Physics: Mechanics + Heat", subject: "Physics"},
+            {week: 2, topic: "Physics: Electricity + Magnetism", subject: "Physics"},
+            {week: 3, topic: "Physics: Optics + Modern Physics", subject: "Physics"},
+            {week: 4, topic: "Chemistry: Physical + Inorganic", subject: "Chemistry"},
+            {week: 5, topic: "Chemistry: Organic + NCERT", subject: "Chemistry"},
+            {week: 6, topic: "Biology: Botany", subject: "Biology"},
+            {week: 7, topic: "Biology: Zoology", subject: "Biology"},
+            {week: 8, topic: "Full Syllabus Mock Test 1", subject: "Mixed"},
+            {week: 9, topic: "Full Syllabus Mock Test 2", subject: "Mixed"},
+            {week: 10, topic: "Final Revision + Mega Mock", subject: "Mixed"}
         ];
         
         // Test Variables
-        let currentTestDay = 0;
+        let currentTestWeek = 0;
         let testQuestions = [];
         let currentQuestionIndex = 0;
         let testTimer = null;
-        let timeRemaining = 30 * 60; // CHANGED: 30 minutes instead of 60
+        let timeRemaining = 180 * 60; // 3 hours in seconds
         let userAnswers = {};
         let testStartTime = null;
         let testEndTime = null;
@@ -1489,8 +1476,8 @@
                         password: password,
                         createdAt: new Date().toISOString(),
                         lastActive: new Date().toISOString(),
-                        currentDay: 1,
-                        completedDays: [],
+                        currentWeek: 1,
+                        completedWeeks: [],
                         scores: {}
                     };
                     
@@ -1605,7 +1592,6 @@
         
         // ========== NEET COUNTDOWN TIMER ==========
         function startNEETCountdown() {
-            // NEET 2026 exam date: May 3, 2026 at 10:00 AM
             const neetExamDate = new Date('May 3, 2026 10:00:00').getTime();
             
             function updateCountdown() {
@@ -1613,107 +1599,60 @@
                 const timeRemaining = neetExamDate - now;
                 
                 if (timeRemaining < 0) {
-                    // Exam has passed
                     document.getElementById('countdownText').innerHTML = '<span style="color: #10b981;">🎉 NEET 2026 Completed!</span>';
                     document.getElementById('countdownTimer').innerHTML = `
                         <div style="grid-column: 1 / -1; text-align: center; padding: 20px;">
                             <div style="font-size: 48px; margin-bottom: 10px;">🎊</div>
                             <h3 style="color: white; margin: 0; font-size: 24px;">Congratulations!</h3>
-                            <p style="opacity: 0.9; margin-top: 10px; font-size: 16px;">NEET 2026 has been completed.</p>
-                            <p style="opacity: 0.8; margin-top: 5px;">Best wishes for your results! 🙏</p>
+                            <p style="opacity: 0.9; margin-top: 10px;">NEET 2026 has been completed.</p>
                         </div>
                     `;
-                    
-                    document.getElementById('motivationMessage').innerHTML = 
-                        '🎓 Your hard work will pay off! Results coming soon!';
-                    
                     return;
                 }
                 
-                // Calculate time units
                 const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
                 
-                // Update header countdown
-                const headerText = `NEET 2026: ${days}d ${hours}h ${minutes}m ${seconds}s`;
-                document.getElementById('countdownText').textContent = headerText;
-                
-                // Update detailed countdown
+                document.getElementById('countdownText').textContent = `NEET 2026: ${days}d ${hours}h ${minutes}m ${seconds}s`;
                 document.getElementById('countdown-days').textContent = days.toString().padStart(2, '0');
                 document.getElementById('countdown-hours').textContent = hours.toString().padStart(2, '0');
                 document.getElementById('countdown-minutes').textContent = minutes.toString().padStart(2, '0');
                 document.getElementById('countdown-seconds').textContent = seconds.toString().padStart(2, '0');
                 
-                // Add critical warning if less than 24 hours
-                if (days === 0) {
-                    document.getElementById('countdownTimer').classList.add('countdown-critical');
-                    document.getElementById('countdownText').style.color = '#ef4444';
-                } else {
-                    document.getElementById('countdownTimer').classList.remove('countdown-critical');
-                    document.getElementById('countdownText').style.color = 'white';
-                }
-                
-                // Update motivation message
                 updateMotivationMessage(days);
             }
             
-            // Update immediately and then every second
             updateCountdown();
             setInterval(updateCountdown, 1000);
         }
         
         function updateMotivationMessage(days) {
             const messages = [
-                { threshold: 0, message: "Exam day! Give your best! 💪", color: "#ef4444" },
-                { threshold: 1, message: "Final day! Stay focused! 🎯", color: "#f59e0b" },
-                { threshold: 7, message: "Final week! Intensive revision! 📚", color: "#f59e0b" },
-                { threshold: 30, message: "One month to go! Stay consistent! ⏳", color: "#3b82f6" },
-                { threshold: 60, message: "Two months remaining! Keep pushing! 🔥", color: "#3b82f6" },
-                { threshold: 90, message: "Three months to NEET! You can do it! ✨", color: "#10b981" },
-                { threshold: 120, message: "Four months left! Stay motivated! 🌟", color: "#10b981" },
-                { threshold: 150, message: "Five months remaining! Daily practice is key! 📅", color: "#10b981" },
-                { threshold: 180, message: "Six months to go! Build strong foundations! 🏗️", color: "#8b5cf6" },
-                { threshold: 240, message: "Eight months left! Enjoy the learning journey! 📚", color: "#8b5cf6" },
-                { threshold: 300, message: "Ten months remaining! Start with basics! 🌟", color: "#8b5cf6" },
-                { threshold: 365, message: "One year to NEET! Perfect time to begin! 🚀", color: "#8b5cf6" }
+                { threshold: 0, message: "Exam day! Give your best! 💪" },
+                { threshold: 7, message: "Final week! Intensive revision! 📚" },
+                { threshold: 30, message: "One month to go! Stay consistent! ⏳" },
+                { threshold: 60, message: "Two months remaining! Keep pushing! 🔥" }
             ];
             
-            // Default message if no threshold matches
             let currentMessage = "Your NEET journey continues! Stay dedicated! 🎓";
-            let messageColor = "#8b5cf6";
             
-            // Find the appropriate message
             for (const msg of messages) {
                 if (days <= msg.threshold) {
                     currentMessage = msg.message;
-                    messageColor = msg.color;
                     break;
                 }
             }
             
-            // Add random variation for same threshold days
-            const sameThresholdMsgs = messages.filter(m => m.threshold === messages.find(msg => days <= msg.threshold)?.threshold);
-            if (sameThresholdMsgs.length > 1) {
-                const randomMsg = sameThresholdMsgs[Math.floor(Math.random() * sameThresholdMsgs.length)];
-                currentMessage = randomMsg.message;
-                messageColor = randomMsg.color;
-            }
-            
             const motivationEl = document.getElementById('motivationMessage');
-            if (motivationEl) {
-                motivationEl.innerHTML = currentMessage;
-                motivationEl.style.color = messageColor;
-                motivationEl.style.fontWeight = '600';
-            }
+            if (motivationEl) motivationEl.innerHTML = currentMessage;
         }
         
         // ========== DASHBOARD FUNCTIONS ==========
         function updateDashboard() {
             if (!currentUser || !userId) return;
             
-            // Start the countdown timer
             startNEETCountdown();
             
             document.getElementById('welcomeMessage').textContent = `Welcome, ${currentUser.fullName || currentUser.username}!`;
@@ -1723,11 +1662,11 @@
             document.getElementById('profileUsername').textContent = currentUser.username;
             document.getElementById('profileId').textContent = userId.substring(0, 8);
             document.getElementById('profileJoined').textContent = new Date(currentUser.createdAt).toLocaleDateString();
-            document.getElementById('profileCurrentDay').textContent = `Day ${currentUser.currentDay || 1}`;
+            document.getElementById('profileCurrentWeek').textContent = `Week ${currentUser.currentWeek || 1}`;
             
-            const completedDays = currentUser.completedDays || [];
-            const totalDays = 82;
-            const progressPercent = Math.round((completedDays.length / totalDays) * 100);
+            const completedWeeks = currentUser.completedWeeks || [];
+            const totalWeeks = 10;
+            const progressPercent = Math.round((completedWeeks.length / totalWeeks) * 100);
             
             const circle = document.querySelector('.progress-ring-fill');
             const radius = 65;
@@ -1737,92 +1676,95 @@
             circle.style.strokeDashoffset = offset;
             
             document.getElementById('progressPercent').textContent = `${progressPercent}%`;
-            document.getElementById('completedDays').textContent = completedDays.length;
+            document.getElementById('completedWeeks').textContent = completedWeeks.length;
             
             let totalScore = 0;
             let totalTests = 0;
+            let totalQuestionsAttempted = 0;
             
             if (currentUser.scores) {
                 Object.values(currentUser.scores).forEach(score => {
                     totalScore += (score.score / score.total) * 100;
                     totalTests++;
+                    totalQuestionsAttempted += score.total;
                 });
             }
             
             const avgScore = totalTests > 0 ? Math.round(totalScore / totalTests) : 0;
             document.getElementById('avgScore').textContent = `${avgScore}%`;
             document.getElementById('totalTests').textContent = totalTests;
+            document.getElementById('totalQuestions').textContent = totalQuestionsAttempted;
             
-            const streak = completedDays.length > 0 ? Math.min(completedDays.length, 7) : 0;
-            document.getElementById('streakDays').textContent = streak;
-            
-            updateDayProgressGrid(completedDays, currentUser.currentDay);
-            updateTestDaySelector(completedDays, currentUser.currentDay);
+            updateWeekProgressGrid(completedWeeks, currentUser.currentWeek);
+            updateTestWeekSelector(completedWeeks, currentUser.currentWeek);
             updateHistoryTable(currentUser.scores || {});
-            updateCertificateProgress(completedDays.length);
+            updateCertificateProgress(completedWeeks.length);
         }
         
-        function updateDayProgressGrid(completedDays, currentDay) {
-            const grid = document.getElementById('dayProgressGrid');
+        function updateWeekProgressGrid(completedWeeks, currentWeek) {
+            const grid = document.getElementById('weekProgressGrid');
             grid.innerHTML = '';
             
-            for (let day = 1; day <= 82; day++) {
-                const dayCell = document.createElement('div');
-                dayCell.className = 'day-cell locked';
-                dayCell.textContent = day;
-                dayCell.title = `Day ${day}`;
+            for (let week = 1; week <= 10; week++) {
+                const weekCell = document.createElement('div');
+                weekCell.className = 'week-cell';
                 
-                if (neetSchedule.find(d => d.day === day)) {
-                    if (completedDays.includes(day)) {
-                        dayCell.className = 'day-cell completed';
-                        dayCell.title = `Day ${day}: Completed`;
-                    } else if (day === currentDay) {
-                        dayCell.className = 'day-cell current';
-                        dayCell.title = `Day ${day}: Current`;
-                    } else if (day < currentDay) {
-                        dayCell.className = 'day-cell available';
-                        dayCell.title = `Day ${day}: Available`;
-                    }
+                if (completedWeeks.includes(week)) {
+                    weekCell.className = 'week-cell completed';
+                } else if (week === currentWeek) {
+                    weekCell.className = 'week-cell current';
+                } else if (week < currentWeek) {
+                    weekCell.className = 'week-cell available';
+                } else {
+                    weekCell.className = 'week-cell locked';
                 }
                 
-                dayCell.onclick = () => {
-                    if (dayCell.classList.contains('locked')) return;
-                    
-                    if (completedDays.includes(day)) {
-                        if (confirm(`You've already completed Day ${day}. Do you want to retake it?`)) {
-                            startTest(day);
+                weekCell.innerHTML = `
+                    <div class="week-number">W${week}</div>
+                    <div class="week-questions">180 Q</div>
+                `;
+                
+                weekCell.onclick = () => {
+                    if (weekCell.classList.contains('locked')) return;
+                    if (completedWeeks.includes(week)) {
+                        if (confirm(`Week ${week} already completed. Retake?`)) {
+                            startTest(week);
                         }
                     } else {
-                        startTest(day);
+                        startTest(week);
                     }
                 };
                 
-                grid.appendChild(dayCell);
+                grid.appendChild(weekCell);
             }
         }
         
-        function updateTestDaySelector(completedDays, currentDay) {
-            const selector = document.getElementById('testDaySelector');
+        function updateTestWeekSelector(completedWeeks, currentWeek) {
+            const selector = document.getElementById('testWeekSelector');
             selector.innerHTML = '';
             
-            for (let day = 1; day <= 82; day++) {
-                const dayCell = document.createElement('div');
-                dayCell.className = 'day-cell locked';
-                dayCell.textContent = day;
-                dayCell.title = `Day ${day}`;
+            for (let week = 1; week <= 10; week++) {
+                const weekCell = document.createElement('div');
+                weekCell.className = 'week-cell';
                 
-                if (neetSchedule.find(d => d.day === day) && day <= currentDay) {
-                    dayCell.className = 'day-cell available';
-                    dayCell.title = `Day ${day}: Available`;
+                if (week <= currentWeek) {
+                    weekCell.className = 'week-cell available';
+                } else {
+                    weekCell.className = 'week-cell locked';
                 }
                 
-                dayCell.onclick = () => {
-                    if (!dayCell.classList.contains('locked')) {
-                        startTest(day);
+                weekCell.innerHTML = `
+                    <div class="week-number">W${week}</div>
+                    <div class="week-questions">180 Q</div>
+                `;
+                
+                weekCell.onclick = () => {
+                    if (!weekCell.classList.contains('locked')) {
+                        startTest(week);
                     }
                 };
                 
-                selector.appendChild(dayCell);
+                selector.appendChild(weekCell);
             }
         }
         
@@ -1841,9 +1783,9 @@
                 return;
             }
             
-            Object.entries(scores).forEach(([dayKey, score]) => {
-                const dayNum = parseInt(dayKey.replace('day', ''));
-                const dayInfo = neetSchedule.find(d => d.day === dayNum) || {topic: `Day ${dayNum}`};
+            Object.entries(scores).forEach(([weekKey, score]) => {
+                const weekNum = parseInt(weekKey.replace('week', ''));
+                const weekInfo = weekSchedule[weekNum - 1] || {topic: `Week ${weekNum}`};
                 
                 const percentage = Math.round((score.score / score.total) * 100);
                 const date = new Date(score.dateCompleted);
@@ -1851,15 +1793,15 @@
                 
                 const row = tbody.insertRow();
                 row.innerHTML = `
-                    <td>Day ${dayNum}</td>
-                    <td>${dayInfo.topic}</td>
+                    <td>Week ${weekNum}</td>
+                    <td>${weekInfo.topic}</td>
                     <td>${formattedDate}</td>
                     <td>${score.score}/${score.total}</td>
-                    <td style="color: ${percentage >= 80 ? '#10b981' : percentage >= 50 ? '#f59e0b' : '#ef4444'}; font-weight: bold;">
+                    <td style="color: ${percentage >= 70 ? '#10b981' : percentage >= 50 ? '#f59e0b' : '#ef4444'}; font-weight: bold;">
                         ${percentage}%
                     </td>
                     <td>
-                        <button onclick="reviewTestFromHistory(${dayNum})" style="padding: 6px 12px; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                        <button onclick="reviewTestFromHistory(${weekNum})" style="padding: 6px 12px; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
                             Review
                         </button>
                     </td>
@@ -1867,20 +1809,20 @@
             });
         }
         
-        function reviewTestFromHistory(day) {
-            const scoreKey = `day${day}`;
+        function reviewTestFromHistory(week) {
+            const scoreKey = `week${week}`;
             if (currentUser.scores && currentUser.scores[scoreKey]) {
                 const testData = currentUser.scores[scoreKey];
-                showReviewForCompletedTest(day, testData);
+                showReviewForCompletedTest(week, testData);
             } else {
-                alert('No test data found for this day.');
+                alert('No test data found for this week.');
             }
         }
         
-        function updateCertificateProgress(completedDays) {
-            const totalDays = 82;
-            const progressPercent = Math.round((completedDays / totalDays) * 100);
-            const daysRemaining = totalDays - completedDays;
+        function updateCertificateProgress(completedWeeks) {
+            const totalWeeks = 10;
+            const progressPercent = Math.round((completedWeeks / totalWeeks) * 100);
+            const weeksRemaining = totalWeeks - completedWeeks;
             
             const circle = document.getElementById('certProgressRing');
             if (circle) {
@@ -1891,13 +1833,13 @@
                 circle.style.strokeDashoffset = offset;
                 
                 document.getElementById('certProgressPercent').textContent = `${progressPercent}%`;
-                document.getElementById('daysRemaining').textContent = `${daysRemaining} days remaining`;
+                document.getElementById('weeksRemaining').textContent = `${weeksRemaining} weeks remaining`;
                 
-                if (completedDays > 0 && completedDays < 82) {
+                if (completedWeeks > 0 && completedWeeks < 10) {
                     document.getElementById('progressCertificate').style.display = 'block';
-                    document.getElementById('progressDays').textContent = completedDays;
+                    document.getElementById('progressWeeks').textContent = completedWeeks;
                     document.getElementById('noCertificate').style.display = 'none';
-                } else if (completedDays >= 82) {
+                } else if (completedWeeks >= 10) {
                     showFullCertificate();
                 }
             }
@@ -1915,15 +1857,16 @@
                     <p style="color: #4b5563; font-size: 18px;">This certifies that</p>
                     <h2 class="certificate-name">${currentUser.fullName || currentUser.username}</h2>
                     <p style="color: #6b7280; font-size: 16px; line-height: 1.6; margin: 20px 0;">
-                        has successfully completed the 82-day NEET preparation program
+                        has successfully completed the 10-week NEET preparation program<br>
+                        with 180 questions per week
                     </p>
                     
                     <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px;">
                         <button onclick="downloadMyCertificate()" style="padding: 12px 25px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer;">
-                            📥 Download Certificate
+                            📥 Download
                         </button>
                         <button onclick="printMyCertificate()" style="padding: 12px 25px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer;">
-                            🖨️ Print Certificate
+                            🖨️ Print
                         </button>
                     </div>
                 </div>
@@ -1933,26 +1876,18 @@
         function downloadMyCertificate() {
             const certContent = `
                 <html>
-                <head>
-                    <title>NEET Certificate - ${currentUser.fullName || currentUser.username}</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; padding: 40px; text-align: center; }
-                        .certificate { border: 3px solid gold; padding: 40px; margin: 20px auto; max-width: 800px; }
-                        .title { color: #1e3a8a; font-size: 32px; margin-bottom: 20px; }
-                        .name { color: #3730a3; font-size: 36px; margin: 20px 0; padding: 10px; border-bottom: 2px solid #fbbf24; }
-                    </style>
-                </head>
-                <body>
-                    <div class="certificate">
-                        <h1 class="title">Certificate of Completion</h1>
-                        <p>This certifies that</p>
-                        <h2 class="name">${currentUser.fullName || currentUser.username}</h2>
-                        <p>has successfully completed the 82-day NEET preparation program</p>
-                        <p><strong>Student ID:</strong> ${userId.substring(0, 8)}</p>
-                        <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
-                    </div>
-                </body>
-                </html>
+                <head><title>NEET Certificate</title>
+                <style>body{font-family:Arial;padding:40px;text-align:center}
+                .certificate{border:3px solid gold;padding:40px;margin:20px auto;max-width:800px}
+                .title{color:#1e3a8a;font-size:32px}.name{color:#3730a3;font-size:36px}</style></head>
+                <body><div class="certificate">
+                    <h1 class="title">Certificate of Completion</h1>
+                    <p>This certifies that</p>
+                    <h2 class="name">${currentUser.fullName || currentUser.username}</h2>
+                    <p>has completed the 10-week NEET preparation program</p>
+                    <p>Student ID: ${userId.substring(0, 8)}</p>
+                    <p>Date: ${new Date().toLocaleDateString()}</p>
+                </div></body></html>
             `;
             
             const blob = new Blob([certContent], { type: 'text/html' });
@@ -1960,10 +1895,7 @@
             const a = document.createElement('a');
             a.href = url;
             a.download = `NEET_Certificate_${currentUser.username}.html`;
-            document.body.appendChild(a);
             a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
         }
         
         function printMyCertificate() {
@@ -1983,204 +1915,180 @@
         }
         
         // ========== TEST FUNCTIONS ==========
-        function startTest(day) {
-            currentTestDay = day;
+        function startTest(week) {
+            currentTestWeek = week;
             currentQuestionIndex = 0;
-            timeRemaining = 30 * 60; // CHANGED: 30 minutes instead of 60
+            timeRemaining = 180 * 60; // 3 hours
             userAnswers = {};
             testStartTime = new Date();
             
-            const dayInfo = neetSchedule.find(d => d.day === day) || {
-                topic: `Day ${day}`,
-                difficulty: "Medium",
-                subject: "General"
-            };
+            const weekInfo = weekSchedule[week - 1] || {topic: `Week ${week}`, subject: "General"};
             
-            document.getElementById('testDayTitle').textContent = `Day ${day} Test`;
-            document.getElementById('testTopic').textContent = dayInfo.topic;
+            document.getElementById('testWeekTitle').textContent = `Week ${week} Test`;
+            document.getElementById('testTopic').textContent = weekInfo.topic;
             
-            document.getElementById('testDayInfo').innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <h3 style="color: #1e293b; margin: 0 0 5px 0;">${dayInfo.topic}</h3>
-                        <p style="color: #64748b; margin: 0;">${dayInfo.subject} • ${dayInfo.difficulty}</p>
-                    </div>
-                    <div style="text-align: right;">
-                        <p style="color: #64748b; margin: 0;">Date: ${dayInfo.date}</p>
-                        <p style="color: #64748b; margin: 0;">Time Limit: 30 minutes</p> <!-- CHANGED -->
-                    </div>
+            document.getElementById('testWeekInfo').innerHTML = `
+                <div>
+                    <h3 style="color:#1e293b;margin:0 0 5px">${weekInfo.topic}</h3>
+                    <p style="color:#64748b;margin:0">${weekInfo.subject} • 180 Questions • 3 Hours</p>
                 </div>
             `;
             
             document.getElementById('authScreen').style.display = 'none';
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('testInterface').style.display = 'block';
-            document.getElementById('resultScreen').style.display = 'none';
-            document.getElementById('reviewScreen').style.display = 'none';
             
-            loadQuestionsFromFirebase(day);
+            loadQuestionsFromFirebase(week);
         }
         
-        // ========== FIXED QUESTION LOADING FUNCTION ==========
-        function loadQuestionsFromFirebase(day) {
-            console.log(`Loading questions for Day ${day} from Firebase...`);
+        // ========== IMAGE SUPPORTED QUESTION LOADING ==========
+        function loadQuestionsFromFirebase(week) {
+            console.log(`Loading questions for Week ${week}...`);
             
-            database.ref(`questions/day${day}`).once('value')
+            database.ref(`questions/week${week}`).once('value')
                 .then(snapshot => {
                     if (snapshot.exists()) {
                         const questionsData = snapshot.val();
-                        console.log('Raw data from Firebase:', questionsData);
+                        console.log('Raw data:', questionsData);
                         
-                        // Initialize testQuestions array
                         testQuestions = [];
                         
-                        // Check if the data has the structure you provided (with questions array)
+                        // Check if data has questions array
                         if (questionsData.questions && Array.isArray(questionsData.questions)) {
-                            console.log('Detected JSON structure with questions array');
-                            
                             questionsData.questions.forEach((q, index) => {
-                                // Convert the options object to array format
                                 const optionsArray = [];
                                 
-                                // Handle options in object format {A: "text", B: "text", C: "text", D: "text"}
-                                if (q.options && typeof q.options === 'object') {
+                                // Handle options with images
+                                if (q.options) {
                                     Object.entries(q.options).forEach(([key, value]) => {
-                                        optionsArray.push({
-                                            id: key,
-                                            text: value
-                                        });
+                                        if (typeof value === 'object' && value !== null) {
+                                            // New format: {text: "...", image: "..."}
+                                            optionsArray.push({
+                                                id: key,
+                                                text: value.text || `Option ${key}`,
+                                                image: value.image || null
+                                            });
+                                        } else {
+                                            // Old format: just text
+                                            optionsArray.push({
+                                                id: key,
+                                                text: value,
+                                                image: null
+                                            });
+                                        }
                                     });
-                                } else {
-                                    // If no options provided, create default options
-                                    optionsArray.push(
-                                        {id: 'A', text: 'Option A'},
-                                        {id: 'B', text: 'Option B'},
-                                        {id: 'C', text: 'Option C'},
-                                        {id: 'D', text: 'Option D'}
-                                    );
                                 }
                                 
-                                // Add the question to testQuestions
                                 testQuestions.push({
                                     id: q.id || index + 1,
                                     text: q.question || `Question ${index + 1}`,
+                                    image: q.questionImage || null,
                                     options: optionsArray,
                                     correctAnswer: q.answer || 'A',
-                                    explanation: q.explanation || 'No explanation available'
+                                    explanation: q.explanation || 'No explanation',
+                                    explanationImage: q.explanationImage || null
                                 });
                             });
-                            
-                            console.log(`Successfully loaded ${testQuestions.length} questions for Day ${day}`);
-                            
-                            if (testQuestions.length === 0) {
-                                showNoQuestionsError(day);
-                                return;
-                            }
-                            
-                            loadQuestion();
-                            startTestTimer();
-                            
                         } else {
-                            // Try alternative structure - maybe questions are directly under day
-                            console.log('Trying alternative structure...');
-                            
-                            // Check if there are any direct question objects
-                            let hasQuestions = false;
-                            Object.keys(questionsData).forEach(key => {
-                                if (questionsData[key] && questionsData[key].question) {
-                                    hasQuestions = true;
-                                }
-                            });
-                            
-                            if (hasQuestions) {
-                                // Process each question
-                                Object.entries(questionsData).forEach(([key, q]) => {
-                                    if (q && q.question) {
-                                        const optionsArray = [];
-                                        
-                                        if (q.options && typeof q.options === 'object') {
-                                            Object.entries(q.options).forEach(([optKey, optValue]) => {
+                            // Alternative structure - direct question objects
+                            Object.entries(questionsData).forEach(([key, q]) => {
+                                if (q && q.question) {
+                                    const optionsArray = [];
+                                    
+                                    if (q.options) {
+                                        Object.entries(q.options).forEach(([optKey, optValue]) => {
+                                            if (typeof optValue === 'object') {
                                                 optionsArray.push({
                                                     id: optKey,
-                                                    text: optValue
+                                                    text: optValue.text || `Option ${optKey}`,
+                                                    image: optValue.image || null
                                                 });
-                                            });
-                                        }
-                                        
-                                        testQuestions.push({
-                                            id: q.id || key,
-                                            text: q.question,
-                                            options: optionsArray,
-                                            correctAnswer: q.answer || 'A',
-                                            explanation: q.explanation || 'No explanation available'
+                                            } else {
+                                                optionsArray.push({
+                                                    id: optKey,
+                                                    text: optValue,
+                                                    image: null
+                                                });
+                                            }
                                         });
                                     }
-                                });
-                                
-                                console.log(`Loaded ${testQuestions.length} questions from alternative structure`);
-                                
-                                if (testQuestions.length > 0) {
-                                    loadQuestion();
-                                    startTestTimer();
-                                    return;
+                                    
+                                    testQuestions.push({
+                                        id: q.id || key,
+                                        text: q.question,
+                                        image: q.questionImage || null,
+                                        options: optionsArray,
+                                        correctAnswer: q.answer || 'A',
+                                        explanation: q.explanation || 'No explanation',
+                                        explanationImage: q.explanationImage || null
+                                    });
                                 }
-                            }
-                            
-                            console.log('No questions found in any expected format for Day', day);
-                            showNoQuestionsError(day);
+                            });
                         }
+                        
+                        console.log(`Loaded ${testQuestions.length} questions with images`);
+                        
+                        if (testQuestions.length === 0) {
+                            alert(`No questions for Week ${week}. Contact admin.`);
+                            backToDashboard();
+                            return;
+                        }
+                        
+                        loadQuestion();
+                        startTestTimer();
+                        
                     } else {
-                        console.log(`No questions found for Day ${day} in Firebase`);
-                        showNoQuestionsError(day);
+                        alert(`No questions for Week ${week}. Contact admin.`);
+                        backToDashboard();
                     }
                 })
                 .catch(error => {
-                    console.error('Error loading questions from Firebase:', error);
-                    showNoQuestionsError(day);
+                    console.error('Error:', error);
+                    alert('Error loading questions');
+                    backToDashboard();
                 });
         }
         
-        function showNoQuestionsError(day) {
-            alert(`No questions available for Day ${day}. Please contact the admin to add questions.`);
-            backToDashboard();
-        }
-        
         function loadQuestion() {
-            if (testQuestions.length === 0) {
-                console.error('No questions to load');
-                return;
-            }
+            if (testQuestions.length === 0) return;
             
             const question = testQuestions[currentQuestionIndex];
             const questionDisplay = document.getElementById('questionDisplay');
             
             const progressPercent = ((currentQuestionIndex + 1) / testQuestions.length) * 100;
             document.getElementById('testProgressBar').style.width = `${progressPercent}%`;
-            
-            document.getElementById('questionCounter').textContent = `Question ${currentQuestionIndex + 1}/${testQuestions.length}`;
+            document.getElementById('questionCounter').textContent = 
+                `Question ${currentQuestionIndex + 1}/${testQuestions.length}`;
             
             let optionsHTML = '';
             question.options.forEach(option => {
                 const isSelected = userAnswers[question.id] === option.id;
+                const imageHtml = option.image ? `<img src="${option.image}" class="option-image" alt="">` : '';
+                
                 optionsHTML += `
                     <div class="option ${isSelected ? 'selected' : ''}" onclick="selectOption('${option.id}')">
                         <div class="option-label">${option.id}</div>
-                        <div class="option-text">${option.text}</div>
+                        <div class="option-content">
+                            <span>${option.text}</span>
+                            ${imageHtml}
+                        </div>
                     </div>
                 `;
             });
             
+            const questionImageHtml = question.image ? 
+                `<img src="${question.image}" class="question-image" alt="Question Image">` : '';
+            
             questionDisplay.innerHTML = `
                 <div class="question">
                     <div class="question-text">${question.text}</div>
+                    ${questionImageHtml}
                     <div class="options">${optionsHTML}</div>
                 </div>
             `;
             
-            // Update button states
             document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
             
-            // Show submit button only on last question
             if (currentQuestionIndex === testQuestions.length - 1) {
                 document.getElementById('nextBtn').style.display = 'none';
                 document.getElementById('submitBtn').style.display = 'inline-block';
@@ -2234,15 +2142,14 @@
         }
         
         function updateTimerDisplay() {
-            const minutes = Math.floor(timeRemaining / 60);
+            const hours = Math.floor(timeRemaining / 3600);
+            const minutes = Math.floor((timeRemaining % 3600) / 60);
             const seconds = timeRemaining % 60;
             document.getElementById('testTimer').textContent = 
-                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             
-            if (timeRemaining <= 300) { // 5 minutes remaining
+            if (timeRemaining <= 300) {
                 document.getElementById('testTimer').style.background = '#dc2626';
-            } else if (timeRemaining <= 600) { // 10 minutes remaining
-                document.getElementById('testTimer').style.background = '#ea580c';
             }
         }
         
@@ -2263,7 +2170,7 @@
             const timeTaken = Math.floor((testEndTime - testStartTime) / 1000);
             
             testResults = {
-                day: currentTestDay,
+                week: currentTestWeek,
                 score: correct,
                 total: totalQuestions,
                 percentage: percentage,
@@ -2291,18 +2198,18 @@
             userRef.once('value').then(snapshot => {
                 const userData = snapshot.val();
                 
-                const completedDays = userData.completedDays || [];
-                if (!completedDays.includes(currentTestDay)) {
-                    completedDays.push(currentTestDay);
-                    userData.completedDays = completedDays;
+                const completedWeeks = userData.completedWeeks || [];
+                if (!completedWeeks.includes(currentTestWeek)) {
+                    completedWeeks.push(currentTestWeek);
+                    userData.completedWeeks = completedWeeks.sort((a,b) => a - b);
                     
-                    if (currentTestDay === userData.currentDay) {
-                        userData.currentDay = Math.min(currentTestDay + 1, 82);
+                    if (currentTestWeek === userData.currentWeek) {
+                        userData.currentWeek = Math.min(currentTestWeek + 1, 10);
                     }
                 }
                 
                 userData.scores = userData.scores || {};
-                userData.scores[`day${currentTestDay}`] = scoreData;
+                userData.scores[`week${currentTestWeek}`] = scoreData;
                 
                 userRef.set(userData).then(() => {
                     currentUser = userData;
@@ -2315,35 +2222,30 @@
             document.getElementById('testInterface').style.display = 'none';
             document.getElementById('resultScreen').style.display = 'block';
             
-            document.getElementById('resultDay').textContent = currentTestDay;
-            const dayInfo = neetSchedule.find(d => d.day === currentTestDay);
-            document.getElementById('resultTopic').textContent = dayInfo?.topic || 'Test';
-            
+            document.getElementById('resultWeek').textContent = currentTestWeek;
             document.getElementById('finalScore').textContent = `${testResults.score}/${testResults.total}`;
             document.getElementById('correctAnswers').textContent = testResults.score;
             document.getElementById('wrongAnswers').textContent = testResults.total - testResults.score;
             document.getElementById('percentageScore').textContent = `${testResults.percentage}%`;
             
-            const minutes = Math.floor(testResults.timeTaken / 60);
+            const hours = Math.floor(testResults.timeTaken / 3600);
+            const minutes = Math.floor((testResults.timeTaken % 3600) / 60);
             const seconds = testResults.timeTaken % 60;
             document.getElementById('timeTaken').textContent = 
-                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             
             const resultIcon = document.getElementById('resultIcon');
             const resultMessage = document.getElementById('resultMessage');
             
-            if (testResults.percentage >= 80) {
+            if (testResults.percentage >= 70) {
                 resultIcon.textContent = '🎉';
-                resultIcon.className = 'result-icon pass';
                 resultMessage.textContent = 'Excellent! You aced this test!';
             } else if (testResults.percentage >= 50) {
                 resultIcon.textContent = '👍';
-                resultIcon.className = 'result-icon pass';
-                resultMessage.textContent = 'Good job! Keep practicing to improve.';
+                resultMessage.textContent = 'Good job! Keep practicing.';
             } else {
                 resultIcon.textContent = '📚';
-                resultIcon.className = 'result-icon fail';
-                resultMessage.textContent = 'Need more practice. Review the concepts and try again.';
+                resultMessage.textContent = 'Need more practice. Try again!';
             }
         }
         
@@ -2351,9 +2253,7 @@
             document.getElementById('resultScreen').style.display = 'none';
             document.getElementById('reviewScreen').style.display = 'block';
             
-            document.getElementById('reviewDay').textContent = currentTestDay;
-            const dayInfo = neetSchedule.find(d => d.day === currentTestDay);
-            document.getElementById('reviewTopic').textContent = dayInfo?.topic || 'Test';
+            document.getElementById('reviewWeek').textContent = currentTestWeek;
             
             const reviewContainer = document.getElementById('reviewQuestions');
             reviewContainer.innerHTML = '';
@@ -2373,13 +2273,23 @@
                         optionClass = 'selected';
                     }
                     
+                    const imageHtml = option.image ? `<img src="${option.image}" class="option-image">` : '';
+                    
                     optionsHTML += `
                         <div class="option ${optionClass}">
                             <div class="option-label">${option.id}</div>
-                            <div class="option-text">${option.text}</div>
+                            <div class="option-content">
+                                <span>${option.text}</span>
+                                ${imageHtml}
+                            </div>
                         </div>
                     `;
                 });
+                
+                const questionImageHtml = question.image ? 
+                    `<img src="${question.image}" class="question-image">` : '';
+                const explanationImageHtml = question.explanationImage ? 
+                    `<img src="${question.explanationImage}" class="explanation-image">` : '';
                 
                 const reviewHTML = `
                     <div class="review-question">
@@ -2387,9 +2297,11 @@
                             ${isCorrect ? '✓ Correct' : '✗ Incorrect'}
                         </div>
                         <div class="question-text">${question.text}</div>
+                        ${questionImageHtml}
                         <div class="options">${optionsHTML}</div>
                         <div class="explanation">
                             <strong>Explanation:</strong> ${question.explanation}
+                            ${explanationImageHtml}
                         </div>
                     </div>
                 `;
@@ -2398,22 +2310,20 @@
             });
         }
         
-        function showReviewForCompletedTest(day, testData) {
-            currentTestDay = day;
+        function showReviewForCompletedTest(week, testData) {
+            currentTestWeek = week;
             
-            // Load the questions for review
-            loadQuestionsFromFirebase(day);
+            loadQuestionsFromFirebase(week);
             
-            // Wait for questions to load, then set up review data
             setTimeout(() => {
                 if (testQuestions.length === 0) {
-                    alert('Cannot review test: Questions not found.');
+                    alert('Questions not found.');
                     backToDashboard();
                     return;
                 }
                 
                 testResults = {
-                    day: day,
+                    week: week,
                     score: testData.score,
                     total: testData.total,
                     percentage: testData.percentage,
@@ -2424,7 +2334,7 @@
                 };
                 
                 showReviewScreen();
-            }, 500);
+            }, 1000);
         }
         
         function backToResults() {
@@ -2469,7 +2379,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             checkAutoLogin();
             showAuthTab('login');
-            // Start countdown timer even if not logged in
             startNEETCountdown();
         });
     </script>
