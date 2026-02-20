@@ -301,6 +301,8 @@
             cursor: pointer;
             transition: all 0.3s;
             border: 2px solid transparent;
+            background: #3b82f6;
+            color: white;
         }
         
         .week-cell.completed {
@@ -314,16 +316,9 @@
             border-color: #d97706;
         }
         
-        .week-cell.available {
-            background: #3b82f6;
-            color: white;
-        }
-        
-        .week-cell.locked {
-            background: #e5e7eb;
-            color: #9ca3af;
-            cursor: not-allowed;
-            opacity: 0.7;
+        .week-cell:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
         
         .week-number {
@@ -529,8 +524,10 @@
             justify-content: space-between;
             align-items: center;
             margin-top: 30px;
-            padding: 20px;
+            padding: 20px 0;
             border-top: 1px solid #e5e7eb;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         
         .test-btn {
@@ -598,29 +595,6 @@
             border-radius: 10px;
             margin-bottom: 20px;
             border-left: 4px solid #4f46e5;
-        }
-        
-        .test-day-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
-        }
-        
-        .test-detail {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        
-        .test-detail-label {
-            color: #64748b;
-            font-size: 14px;
-        }
-        
-        .test-detail-value {
-            font-weight: 600;
-            color: #1e293b;
         }
         
         /* Progress Bar */
@@ -898,66 +872,20 @@
         
         /* Responsive */
         @media (max-width: 768px) {
-            .container {
-                max-width: 100%;
-                margin: 10px;
-            }
-            
-            .auth-container {
-                padding: 25px;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .week-grid {
-                grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
-            }
-            
-            .week-cell {
-                height: 50px;
-                font-size: 12px;
-            }
-            
-            .test-interface {
-                max-width: 100%;
-            }
-            
-            .result-stats {
-                grid-template-columns: 1fr;
-            }
-            
-            .modal-buttons {
-                flex-direction: column;
-            }
-            
-            .modal-btn {
-                width: 100%;
-            }
-            
-            .countdown-value {
-                font-size: 24px;
-            }
-            
-            .countdown-unit {
-                padding: 8px;
-            }
-            
-            #neetCountdown {
-                font-size: 12px;
-                padding: 6px 12px;
-            }
-            
-            #countdownTimer {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-            }
-            
-            .dashboard-tab {
-                padding: 12px 15px;
-                font-size: 14px;
-            }
+            .container { max-width: 100%; margin: 10px; }
+            .auth-container { padding: 25px; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .week-grid { grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)); }
+            .week-cell { height: 50px; font-size: 12px; }
+            .test-interface { max-width: 100%; }
+            .result-stats { grid-template-columns: 1fr; }
+            .modal-buttons { flex-direction: column; }
+            .modal-btn { width: 100%; }
+            .countdown-value { font-size: 24px; }
+            .countdown-unit { padding: 8px; }
+            #neetCountdown { font-size: 12px; padding: 6px 12px; }
+            #countdownTimer { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .dashboard-tab { padding: 12px 15px; font-size: 14px; }
         }
     </style>
 </head>
@@ -1164,7 +1092,7 @@
             <p style="color: #64748b; margin-bottom: 25px;">Each test has 180 questions with 3-hour time limit</p>
             
             <div class="week-grid" id="testWeekSelector">
-                <!-- Weeks will be populated -->
+                <!-- Weeks will be populated - ALL WEEKS UNLOCKED -->
             </div>
         </div>
         
@@ -1286,7 +1214,7 @@
             <div class="test-controls">
                 <button id="prevBtn" class="test-btn" onclick="prevQuestion()" disabled>⬅ Previous</button>
                 <div>
-                    <span id="questionCounter">Question 1/180</span>
+                    <span id="questionCounter">Question <span id="currentQNum">1</span>/<span id="totalQCount">180</span></span>
                 </div>
                 <button id="nextBtn" class="test-btn" onclick="nextQuestion()">Next ➡</button>
                 <button id="submitBtn" class="test-btn submit" onclick="showSubmitConfirmation()" style="display: none;">Submit Test</button>
@@ -1365,7 +1293,7 @@
             <div class="modal-title">Submit Test?</div>
             <div class="modal-message">
                 Are you sure you want to submit?<br>
-                You have answered <span id="answeredCount">0</span> out of 180 questions.<br>
+                You have answered <span id="answeredCount">0</span> out of <span id="totalAnsweredCount">180</span> questions.<br>
                 Once submitted, you cannot change your answers.
             </div>
             <div class="modal-buttons">
@@ -1696,7 +1624,7 @@
             document.getElementById('totalQuestions').textContent = totalQuestionsAttempted;
             
             updateWeekProgressGrid(completedWeeks, currentUser.currentWeek);
-            updateTestWeekSelector(completedWeeks, currentUser.currentWeek);
+            updateTestWeekSelector(); // ALL WEEKS UNLOCKED
             updateHistoryTable(currentUser.scores || {});
             updateCertificateProgress(completedWeeks.length);
         }
@@ -1713,10 +1641,8 @@
                     weekCell.className = 'week-cell completed';
                 } else if (week === currentWeek) {
                     weekCell.className = 'week-cell current';
-                } else if (week < currentWeek) {
-                    weekCell.className = 'week-cell available';
                 } else {
-                    weekCell.className = 'week-cell locked';
+                    weekCell.className = 'week-cell'; // All available
                 }
                 
                 weekCell.innerHTML = `
@@ -1725,43 +1651,32 @@
                 `;
                 
                 weekCell.onclick = () => {
-                    if (weekCell.classList.contains('locked')) return;
-                    if (completedWeeks.includes(week)) {
-                        if (confirm(`Week ${week} already completed. Retake?`)) {
-                            startTest(week);
-                        }
-                    } else {
-                        startTest(week);
-                    }
+                    // ALL WEEKS ARE CLICKABLE - no locked
+                    startTest(week);
                 };
                 
                 grid.appendChild(weekCell);
             }
         }
         
-        function updateTestWeekSelector(completedWeeks, currentWeek) {
+        // ========== FIXED: ALL WEEKS UNLOCKED ==========
+        function updateTestWeekSelector() {
             const selector = document.getElementById('testWeekSelector');
             selector.innerHTML = '';
             
             for (let week = 1; week <= 10; week++) {
                 const weekCell = document.createElement('div');
-                weekCell.className = 'week-cell';
-                
-                if (week <= currentWeek) {
-                    weekCell.className = 'week-cell available';
-                } else {
-                    weekCell.className = 'week-cell locked';
-                }
+                weekCell.className = 'week-cell'; // All weeks are available
                 
                 weekCell.innerHTML = `
                     <div class="week-number">W${week}</div>
                     <div class="week-questions">180 Q</div>
                 `;
                 
+                // ALL WEEKS CLICKABLE - no conditions
                 weekCell.onclick = () => {
-                    if (!weekCell.classList.contains('locked')) {
-                        startTest(week);
-                    }
+                    console.log(`Week ${week} clicked - starting test`);
+                    startTest(week);
                 };
                 
                 selector.appendChild(weekCell);
@@ -1916,6 +1831,7 @@
         
         // ========== TEST FUNCTIONS ==========
         function startTest(week) {
+            console.log(`startTest called for week: ${week}`);
             currentTestWeek = week;
             currentQuestionIndex = 0;
             timeRemaining = 180 * 60; // 3 hours
@@ -1941,112 +1857,193 @@
             loadQuestionsFromFirebase(week);
         }
         
-        // ========== IMAGE SUPPORTED QUESTION LOADING ==========
+        // ========== FIXED: LOADS 1 OR 180 QUESTIONS - BOTH WORK ==========
         function loadQuestionsFromFirebase(week) {
-            console.log(`Loading questions for Week ${week}...`);
+            console.log(`🔍 Loading questions for Week ${week} from Firebase...`);
             
-            database.ref(`questions/week${week}`).once('value')
+            // DIRECT REFERENCE - exact path admin uses
+            const questionRef = database.ref(`questions/week${week}`);
+            
+            questionRef.once('value')
                 .then(snapshot => {
+                    console.log('📦 Firebase snapshot exists:', snapshot.exists());
+                    
                     if (snapshot.exists()) {
                         const questionsData = snapshot.val();
-                        console.log('Raw data:', questionsData);
+                        console.log('📊 Raw data from Firebase:', questionsData);
                         
+                        // Clear previous questions
                         testQuestions = [];
                         
-                        // Check if data has questions array
-                        if (questionsData.questions && Array.isArray(questionsData.questions)) {
-                            questionsData.questions.forEach((q, index) => {
-                                const optionsArray = [];
-                                
-                                // Handle options with images
-                                if (q.options) {
-                                    Object.entries(q.options).forEach(([key, value]) => {
-                                        if (typeof value === 'object' && value !== null) {
-                                            // New format: {text: "...", image: "..."}
-                                            optionsArray.push({
-                                                id: key,
-                                                text: value.text || `Option ${key}`,
-                                                image: value.image || null
-                                            });
-                                        } else {
-                                            // Old format: just text
-                                            optionsArray.push({
-                                                id: key,
-                                                text: value,
-                                                image: null
-                                            });
-                                        }
-                                    });
-                                }
-                                
-                                testQuestions.push({
-                                    id: q.id || index + 1,
-                                    text: q.question || `Question ${index + 1}`,
-                                    image: q.questionImage || null,
-                                    options: optionsArray,
-                                    correctAnswer: q.answer || 'A',
-                                    explanation: q.explanation || 'No explanation',
-                                    explanationImage: q.explanationImage || null
-                                });
+                        // ===== CASE 1: Object with q1, q2, q3... (OUR ADMIN PANEL FORMAT) =====
+                        if (typeof questionsData === 'object' && !Array.isArray(questionsData)) {
+                            console.log('📋 Detected object format with keys:', Object.keys(questionsData));
+                            
+                            // Get all keys that might be questions
+                            const questionKeys = Object.keys(questionsData).filter(key => 
+                                key.startsWith('q') || !isNaN(parseInt(key)) || key === '0' || key === '1'
+                            );
+                            
+                            console.log('🔑 Found keys:', questionKeys);
+                            
+                            // Sort keys properly
+                            questionKeys.sort((a, b) => {
+                                const numA = parseInt(a.toString().replace('q', '')) || parseInt(a) || 0;
+                                const numB = parseInt(b.toString().replace('q', '')) || parseInt(b) || 0;
+                                return numA - numB;
                             });
-                        } else {
-                            // Alternative structure - direct question objects
-                            Object.entries(questionsData).forEach(([key, q]) => {
-                                if (q && q.question) {
-                                    const optionsArray = [];
-                                    
-                                    if (q.options) {
-                                        Object.entries(q.options).forEach(([optKey, optValue]) => {
-                                            if (typeof optValue === 'object') {
-                                                optionsArray.push({
-                                                    id: optKey,
-                                                    text: optValue.text || `Option ${optKey}`,
-                                                    image: optValue.image || null
-                                                });
-                                            } else {
-                                                optionsArray.push({
-                                                    id: optKey,
-                                                    text: optValue,
-                                                    image: null
-                                                });
-                                            }
-                                        });
-                                    }
-                                    
-                                    testQuestions.push({
-                                        id: q.id || key,
-                                        text: q.question,
-                                        image: q.questionImage || null,
-                                        options: optionsArray,
-                                        correctAnswer: q.answer || 'A',
-                                        explanation: q.explanation || 'No explanation',
-                                        explanationImage: q.explanationImage || null
-                                    });
+                            
+                            // Process each question
+                            questionKeys.forEach((key, index) => {
+                                const q = questionsData[key];
+                                if (q && (q.question || q.text)) {
+                                    console.log(`✅ Processing question ${index+1} with key: ${key}`);
+                                    processAndAddQuestion(q, index + 1);
                                 }
                             });
                         }
                         
-                        console.log(`Loaded ${testQuestions.length} questions with images`);
+                        // ===== CASE 2: Direct array format =====
+                        else if (Array.isArray(questionsData)) {
+                            console.log('📋 Detected array format with length:', questionsData.length);
+                            
+                            questionsData.forEach((q, index) => {
+                                if (q && (q.question || q.text)) {
+                                    console.log(`✅ Processing array question ${index+1}`);
+                                    processAndAddQuestion(q, index + 1);
+                                }
+                            });
+                        }
+                        
+                        // ===== CASE 3: { questions: [...] } format =====
+                        else if (questionsData.questions && Array.isArray(questionsData.questions)) {
+                            console.log('📋 Detected {questions: [...]} format');
+                            
+                            questionsData.questions.forEach((q, index) => {
+                                if (q && (q.question || q.text)) {
+                                    console.log(`✅ Processing questions array item ${index+1}`);
+                                    processAndAddQuestion(q, index + 1);
+                                }
+                            });
+                        }
+                        
+                        // ===== CASE 4: Single question object directly =====
+                        else if (questionsData.question || questionsData.text) {
+                            console.log('📋 Detected single question object');
+                            processAndAddQuestion(questionsData, 1);
+                        }
+                        
+                        console.log(`🎯 Total questions loaded: ${testQuestions.length}`);
                         
                         if (testQuestions.length === 0) {
-                            alert(`No questions for Week ${week}. Contact admin.`);
+                            alert(`❌ No questions found for Week ${week}. Admin ne questions add kiye hain?`);
                             backToDashboard();
                             return;
                         }
                         
+                        // Sort by ID
+                        testQuestions.sort((a, b) => a.id - b.id);
+                        
+                        // Update total questions display
+                        document.getElementById('totalQCount').textContent = testQuestions.length;
+                        document.getElementById('totalAnsweredCount').textContent = testQuestions.length;
+                        
+                        // Start the test
                         loadQuestion();
                         startTestTimer();
                         
                     } else {
-                        alert(`No questions for Week ${week}. Contact admin.`);
+                        console.log(`❌ No data at path: questions/week${week}`);
+                        alert(`⚠️ No questions available for Week ${week}. Please contact admin.`);
                         backToDashboard();
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error loading questions');
+                    console.error('🔥 Firebase error:', error);
+                    alert('Error loading questions: ' + error.message);
                     backToDashboard();
                 });
+        }
+        
+        // Helper function to process and add a single question
+        function processAndAddQuestion(q, index) {
+            try {
+                // Get question text
+                const questionText = q.question || q.text || `Question ${index}`;
+                
+                // Process options
+                const options = [];
+                
+                // Check if options exist
+                if (q.options) {
+                    // Options as object {A: "...", B: "...", etc.}
+                    if (typeof q.options === 'object' && !Array.isArray(q.options)) {
+                        const letters = ['A', 'B', 'C', 'D'];
+                        letters.forEach(letter => {
+                            if (q.options[letter] !== undefined) {
+                                const optValue = q.options[letter];
+                                if (typeof optValue === 'object' && optValue !== null) {
+                                    options.push({
+                                        id: letter,
+                                        text: optValue.text || `Option ${letter}`,
+                                        image: optValue.image || null
+                                    });
+                                } else {
+                                    options.push({
+                                        id: letter,
+                                        text: optValue || `Option ${letter}`,
+                                        image: null
+                                    });
+                                }
+                            }
+                        });
+                    }
+                    // Options as array
+                    else if (Array.isArray(q.options)) {
+                        q.options.forEach((opt, i) => {
+                            const letter = String.fromCharCode(65 + i); // A, B, C, D
+                            if (typeof opt === 'object' && opt !== null) {
+                                options.push({
+                                    id: letter,
+                                    text: opt.text || `Option ${letter}`,
+                                    image: opt.image || null
+                                });
+                            } else {
+                                options.push({
+                                    id: letter,
+                                    text: opt || `Option ${letter}`,
+                                    image: null
+                                });
+                            }
+                        });
+                    }
+                }
+                
+                // If no options found, create default ones
+                if (options.length === 0) {
+                    ['A', 'B', 'C', 'D'].forEach(letter => {
+                        options.push({
+                            id: letter,
+                            text: `Option ${letter}`,
+                            image: null
+                        });
+                    });
+                }
+                
+                // Add question to array
+                testQuestions.push({
+                    id: q.id || index,
+                    text: questionText,
+                    image: q.questionImage || q.image || null,
+                    options: options,
+                    correctAnswer: q.answer || 'A',
+                    explanation: q.explanation || 'No explanation available',
+                    explanationImage: q.explanationImage || null
+                });
+                
+            } catch (err) {
+                console.error('Error processing question:', err, q);
+            }
         }
         
         function loadQuestion() {
@@ -2057,8 +2054,7 @@
             
             const progressPercent = ((currentQuestionIndex + 1) / testQuestions.length) * 100;
             document.getElementById('testProgressBar').style.width = `${progressPercent}%`;
-            document.getElementById('questionCounter').textContent = 
-                `Question ${currentQuestionIndex + 1}/${testQuestions.length}`;
+            document.getElementById('currentQNum').textContent = currentQuestionIndex + 1;
             
             let optionsHTML = '';
             question.options.forEach(option => {
@@ -2315,6 +2311,7 @@
             
             loadQuestionsFromFirebase(week);
             
+            // Give time for questions to load
             setTimeout(() => {
                 if (testQuestions.length === 0) {
                     alert('Questions not found.');
@@ -2334,7 +2331,7 @@
                 };
                 
                 showReviewScreen();
-            }, 1000);
+            }, 1500);
         }
         
         function backToResults() {
